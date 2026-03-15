@@ -1,0 +1,155 @@
+'use client';
+import { useRef, useEffect, useState } from 'react';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import BookingModal from '@/components/BookingModal';
+import Link from 'next/link';
+import { ArrowRight, MessageCircle, Brain, Shield, BookOpen, FileText, Users, Headphones, Globe, Smartphone } from 'lucide-react';
+
+function Reveal({ children, delay = 0, style = {} }: { children: React.ReactNode; delay?: number; style?: React.CSSProperties }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVisible(true); }, { threshold: 0.1 });
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, []);
+  return (
+    <div ref={ref} style={{ opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(28px)', transition: `opacity 0.65s ease ${delay}ms, transform 0.65s ease ${delay}ms`, ...style }}>{children}</div>
+  );
+}
+
+const services = [
+  {
+    id: 'counselling',
+    icon: MessageCircle,
+    tag: 'Core Service',
+    title: 'Online Counselling Sessions',
+    desc: 'One-on-one confidential sessions with certified counsellors and psychologists, accessible from anywhere. Sessions are available via video, voice, or text-based chat to accommodate your comfort level and connectivity.',
+    features: ['Flexible scheduling around class timetables', 'Video, voice, or text sessions', 'Certified, verified counsellors', 'Follow-up session notes and resources'],
+    color: '#8B4A3C',
+  },
+  {
+    id: 'ai-support',
+    icon: Brain,
+    tag: 'AI-Powered',
+    title: 'AI Chat Support',
+    desc: 'An always-available AI companion providing immediate emotional support, coping strategies, and mental health resources. Designed specifically for African students, with multilingual support including Swahili, Igbo, Hausa, and Twi.',
+    features: ['Available 24/7, no waiting time', 'Swahili, English, Igbo (coming soon)', 'Evidence-based coping strategies', 'Crisis detection and escalation to human counsellors'],
+    color: '#4A6741',
+  },
+  {
+    id: 'anonymous',
+    icon: Shield,
+    tag: 'Privacy-First',
+    title: 'Anonymous Sessions',
+    desc: 'Access full counselling support without ever sharing your identity. Our anonymous session feature was built specifically in response to student feedback showing that fear of stigma is the primary barrier to seeking help.',
+    features: ['No personal information required', 'Anonymous usernames only', 'Encrypted session data', 'Equal quality of care as standard sessions'],
+    color: '#7A5A3C',
+  },
+  {
+    id: 'resources',
+    icon: BookOpen,
+    tag: 'Self-Help',
+    title: 'Resource Library',
+    desc: 'A curated and growing collection of articles, guides, workbooks, and multimedia resources covering academic stress, anxiety, depression, relationships, identity, career decisions, and more.',
+    features: ['Categorised by topic and condition', 'Africa-specific mental health content', 'Downloadable PDF workbooks', 'Weekly new content from our counsellors'],
+    color: '#C4956A',
+  },
+  {
+    id: 'assessment',
+    icon: FileText,
+    tag: 'Track Progress',
+    title: 'Self-Assessment Tools',
+    desc: 'Standardised and purpose-built assessment tools to help you understand your mental health baseline, identify areas of concern, and track your progress over time.',
+    features: ['Validated mental health screening tools', 'Personalised result interpretation', 'Progress tracking over weeks and months', 'Option to share results directly with your counsellor'],
+    color: '#5A7A8A',
+  },
+  {
+    id: 'referral',
+    icon: Users,
+    tag: 'Connected Care',
+    title: 'Referral System',
+    desc: 'JaliMind connects students with existing campus resources — academic advisors, career services, student finance offices — through a seamless referral system that removes the friction of asking for help.',
+    features: ['Connection to campus guidance departments', 'Academic advisor integration', 'Career services referrals', 'WhatsApp-based follow-up'],
+    color: '#6B4A8A',
+  },
+];
+
+export default function Services() {
+  const [bookingOpen, setBookingOpen] = useState(false);
+  return (
+    <>
+      <Navbar />
+      <BookingModal isOpen={bookingOpen} onClose={() => setBookingOpen(false)} />
+
+      <section style={{ background: 'linear-gradient(135deg, #2C1810 0%, #4A2820 50%, #6B3228 100%)', padding: '160px 5% 100px', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle at 30% 70%, rgba(74,103,65,0.2) 0%, transparent 50%)' }} />
+        <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 2, textAlign: 'center' }}>
+          <p style={{ fontSize: 13, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', marginBottom: 16 }}>What We Offer</p>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(40px, 5vw, 64px)', fontWeight: 800, color: 'white', lineHeight: 1.15, marginBottom: 24, maxWidth: 720, margin: '0 auto 24px' }}>Services Designed Around Real Student Needs</h1>
+          <p style={{ fontSize: 17, color: 'rgba(255,255,255,0.7)', maxWidth: 560, margin: '0 auto', lineHeight: 1.85 }}>Every feature was shaped by direct feedback from African university students. Not assumptions — evidence.</p>
+        </div>
+      </section>
+
+      {/* SERVICES GRID */}
+      <section style={{ background: 'var(--warm-white)', padding: '100px 5%' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 64 }}>
+          {services.map(({ id, icon: Icon, tag, title, desc, features, color }, i) => (
+            <Reveal key={id} delay={i * 50}>
+              <div id={id} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 56, alignItems: 'center', paddingBottom: 64, borderBottom: '1px solid var(--border)' }}>
+                <div style={{ order: i % 2 === 0 ? 1 : 2 }}>
+                  <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color, display: 'block', marginBottom: 12 }}>{tag}</span>
+                  <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(24px, 2.5vw, 34px)', fontWeight: 700, color: 'var(--charcoal)', marginBottom: 18, lineHeight: 1.3 }}>{title}</h2>
+                  <p style={{ fontSize: 15, color: 'var(--muted)', lineHeight: 1.9, marginBottom: 28 }}>{desc}</p>
+                  <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    {features.map((f, j) => (
+                      <li key={j} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                        <div style={{ width: 20, height: 20, borderRadius: '50%', background: `${color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2 }}>
+                          <div style={{ width: 6, height: 6, borderRadius: '50%', background: color }} />
+                        </div>
+                        <span style={{ fontSize: 14, color: 'var(--charcoal-soft)', lineHeight: 1.6 }}>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <button onClick={() => setBookingOpen(true)} style={{ marginTop: 28, display: 'inline-flex', alignItems: 'center', gap: 8, background: color, color: 'white', border: 'none', padding: '13px 28px', borderRadius: 6, fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'opacity 0.3s' }}
+                  onMouseEnter={e => (e.currentTarget as HTMLElement).style.opacity = '0.85'}
+                  onMouseLeave={e => (e.currentTarget as HTMLElement).style.opacity = '1'}
+                  >Get Started <ArrowRight size={15} /></button>
+                </div>
+                <div style={{ order: i % 2 === 0 ? 2 : 1 }}>
+                  <div style={{ borderRadius: 16, aspectRatio: '4/3', background: `linear-gradient(135deg, ${color}20, ${color}50)`, display: 'flex', alignItems: 'center', justifyContent: 'center', border: `1px solid ${color}30` }}>
+                    <Icon size={72} style={{ color, opacity: 0.6 }} />
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* ADDITIONAL: WHATSAPP + MULTILINGUAL */}
+      <section style={{ background: 'var(--cream)', padding: '80px 5%' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 28 }}>
+          {[
+            { icon: Smartphone, title: 'WhatsApp Integration', desc: 'Connect with JaliMind directly through WhatsApp — no new app needed. Start a session, access resources, or reach crisis support right from where you already chat.', color: '#25D366' },
+            { icon: Globe, title: 'Multilingual Support', desc: 'JaliMind is being built to speak your language — literally. English and Swahili are live, with Igbo, Hausa, Twi, and French in development.', color: 'var(--terracotta)' },
+            { icon: Headphones, title: '24/7 Crisis Line', desc: 'Mental health crises do not follow office hours. Our crisis support line is always available, connecting you to a trained professional immediately.', color: '#D4403A' },
+          ].map(({ icon: Icon, title, desc, color }, i) => (
+            <Reveal key={i} delay={i * 100}>
+              <div style={{ background: 'white', borderRadius: 12, padding: '32px 28px', border: '1px solid var(--border)' }}>
+                <div style={{ width: 52, height: 52, borderRadius: 10, background: `${color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
+                  <Icon size={26} style={{ color }} />
+                </div>
+                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 700, color: 'var(--charcoal)', marginBottom: 12 }}>{title}</h3>
+                <p style={{ fontSize: 14, color: 'var(--muted)', lineHeight: 1.8 }}>{desc}</p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      <Footer />
+    </>
+  );
+}

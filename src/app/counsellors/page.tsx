@@ -3,7 +3,9 @@ import { useRef, useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import BookingModal from '@/components/BookingModal';
+import Image from 'next/image';
 import { Star, Filter, Search, MapPin, Award } from 'lucide-react';
+import { counsellorsData } from '@/data/counsellors';
 
 function Reveal({ children, delay = 0, style = {} }: { children: React.ReactNode; delay?: number; style?: React.CSSProperties }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -18,22 +20,13 @@ function Reveal({ children, delay = 0, style = {} }: { children: React.ReactNode
   );
 }
 
-const counsellors = [
-  { name: 'Dr. Amara Osei', role: 'Clinical Psychologist', specialty: 'Academic Stress & Anxiety', country: 'Ghana', color: '#C4A882', years: 8, rating: 4.9, languages: ['English', 'Twi'], sessions: 430, bio: 'Dr. Osei specialises in helping students navigate exam anxiety, performance pressure, and academic burnout with a culturally sensitive, strengths-based approach.' },
-  { name: 'Ms. Fatima Al-Hassan', role: 'Licensed Counsellor', specialty: 'Identity & Cultural Transitions', country: 'Nigeria', color: '#8B7355', years: 6, rating: 4.8, languages: ['English', 'Hausa'], sessions: 310, bio: 'Fatima works with students experiencing cultural identity challenges, religious conflicts, and the transitions that come with leaving home for university.' },
-  { name: 'Mr. David Kamau', role: 'Student Wellness Advisor', specialty: 'Depression & Resilience', country: 'Kenya', color: '#A09070', years: 5, rating: 4.9, languages: ['English', 'Swahili'], sessions: 280, bio: 'David brings a community-centred approach to depression and emotional resilience, drawing on both Western therapeutic models and African communal healing traditions.' },
-  { name: 'Dr. Nadia Bouali', role: 'Psychotherapist', specialty: 'Trauma & Recovery', country: 'Morocco', color: '#B89878', years: 10, rating: 5.0, languages: ['English', 'French', 'Arabic'], sessions: 520, bio: 'A trauma-informed therapist with a decade of experience supporting students through grief, abuse recovery, and post-traumatic stress in academic environments.' },
-  { name: 'Ms. Ama Asante', role: 'Counselling Psychologist', specialty: 'Relationships & Communication', country: 'Ghana', color: '#8B9870', years: 4, rating: 4.7, languages: ['English', 'Twi'], sessions: 190, bio: 'Ama helps students develop healthier relationships — romantic, familial, and peer — through communication skills training and attachment-based therapy.' },
-  { name: 'Mr. Emeka Okafor', role: 'Career & Mental Health Counsellor', specialty: 'Career Anxiety & Purpose', country: 'Nigeria', color: '#706890', years: 7, rating: 4.8, languages: ['English', 'Igbo'], sessions: 360, bio: 'Emeka integrates career counselling with mental health support, helping students who feel lost, pressured to choose certain paths, or anxious about their futures.' },
-];
-
 export default function Counsellors() {
   const [bookingOpen, setBookingOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('All');
 
   const specialties = ['All', 'Anxiety', 'Depression', 'Trauma', 'Identity', 'Relationships', 'Career'];
-  const filtered = counsellors.filter(c =>
+  const filtered = counsellorsData.filter(c =>
     (filter === 'All' || c.specialty.toLowerCase().includes(filter.toLowerCase())) &&
     (search === '' || c.name.toLowerCase().includes(search.toLowerCase()) || c.specialty.toLowerCase().includes(search.toLowerCase()))
   );
@@ -82,27 +75,19 @@ export default function Counsellors() {
             </div>
           )}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 28 }}>
-            {filtered.map(({ name, role, specialty, country, color, years, rating, languages, sessions, bio }, i) => (
+            {filtered.map(({ name, role, specialty, country, color, years, rating, languages, sessions, bio, image }, i) => (
               <Reveal key={name} delay={i * 80}>
                 <div style={{ background: 'white', borderRadius: 16, overflow: 'hidden', border: '1px solid var(--border)', transition: 'all 0.35s' }}
                 onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(-4px)'; el.style.boxShadow = '0 20px 48px rgba(0,0,0,0.1)'; }}
                 onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(0)'; el.style.boxShadow = 'none'; }}
                 >
-                  <div style={{ height: 120, background: `linear-gradient(135deg, ${color}40, ${color}80)`, display: 'flex', alignItems: 'center', padding: '0 24px', gap: 16 }}>
-                    <div style={{ width: 72, height: 72, borderRadius: '50%', background: color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, border: '3px solid white' }}>
-                      <span style={{ color: 'white', fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700 }}>{name[0]}</span>
-                    </div>
-                    <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 4 }}>
-                        <Star size={12} style={{ color: '#F5A623', fill: '#F5A623' }} />
-                        <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--charcoal)' }}>{rating}</span>
-                        <span style={{ fontSize: 12, color: 'var(--muted)' }}>({sessions} sessions)</span>
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                        <MapPin size={11} style={{ color: 'var(--terracotta)' }} />
-                        <span style={{ fontSize: 12, color: 'var(--muted)' }}>{country}</span>
-                      </div>
-                    </div>
+                  <div style={{ position: 'relative', height: 300, width: '100%', overflow: 'hidden' }}>
+                    <Image
+                      src={image}
+                      alt={name}
+                      fill
+                      style={{ objectFit: 'cover', objectPosition: 'center' }}
+                    />
                   </div>
                   <div style={{ padding: '20px 24px 24px' }}>
                     <span style={{ fontSize: 11, color: 'var(--terracotta)', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase' }}>{specialty}</span>

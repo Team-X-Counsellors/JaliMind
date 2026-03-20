@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import BookingModal from '@/components/BookingModal';
@@ -9,6 +10,13 @@ import {
   BookOpen, Star, ChevronDown, Award, Heart, Globe,
   Brain, Headphones, FileText, ChevronRight, Quote
 } from 'lucide-react';
+import { servicesData } from '@/data/services';
+import { counsellorsData } from '@/data/counsellors';
+import { testimonialsData } from '@/data/testimonials';
+import { getHeroAsset } from '@/data/heroAssets';
+import { faqsData } from '@/data/faqs';
+import { caseStudiesData } from '@/data/caseStudies';
+import { blogPostsData } from '@/data/blog';
 
 function useScrollReveal() {
   const ref = useRef<HTMLDivElement>(null);
@@ -33,38 +41,20 @@ function Reveal({ children, delay = 0, style = {} }: { children: React.ReactNode
   );
 }
 
-const services = [
-  { icon: MessageCircle, title: 'Online Counselling Sessions', desc: 'One-on-one confidential sessions with certified counsellors and psychologists, accessible from anywhere on campus.', href: '/services#counselling' },
-  { icon: Brain, title: 'AI Chat Support', desc: 'An always-available AI companion providing immediate emotional support and coping strategies, available in multiple African languages.', href: '/services#ai-support' },
-  { icon: Shield, title: 'Anonymous Sessions', desc: 'Seek help without fear. Our anonymous session option ensures your identity remains fully protected throughout your journey.', href: '/services#anonymous' },
-  { icon: BookOpen, title: 'Resource Library', desc: 'A curated collection of articles, guides, and self-help materials covering mental health, academic pressure, and personal growth.', href: '/services#resources' },
-  { icon: FileText, title: 'Self-Assessment Tools', desc: 'Structured tools to help you understand your mental health baseline and track progress over time.', href: '/services#assessment' },
-  { icon: Users, title: 'Community Forum', desc: 'A moderated, safe space for students to connect, share experiences, and support one another across campuses.', href: '/community' },
-];
-
-const counsellors = [
-  { name: 'Dr. Amara Osei', role: 'Clinical Psychologist', specialty: 'Academic Stress & Anxiety', country: 'Ghana', color: '#C4A882' },
-  { name: 'Ms. Fatima Al-Hassan', role: 'Licensed Counsellor', specialty: 'Identity & Cultural Transitions', country: 'Nigeria', color: '#8B7355' },
-  { name: 'Mr. David Kamau', role: 'Student Wellness Advisor', specialty: 'Depression & Resilience', country: 'Kenya', color: '#A09070' },
-  { name: 'Dr. Nadia Bouali', role: 'Psychotherapist', specialty: 'Trauma & Recovery', country: 'Morocco', color: '#B89878' },
-];
-
-const testimonials = [
-  { name: 'Chisom A.', university: 'University of Lagos', text: 'JaliMind helped me address my anxiety during exam season without anyone knowing. The anonymous option changed everything for me.' },
-  { name: 'Aisha M.', university: 'University of Nairobi', text: 'I finally found a platform that understands the unique pressures African students face. The AI support in Swahili was incredible.' },
-  { name: 'Kwame T.', university: 'KNUST, Ghana', text: 'The community forum connected me with students going through exactly what I was facing. I no longer feel alone in this.' },
-];
-
-const faqs = [
-  { q: 'Is my information kept private?', a: 'Absolutely. JaliMind is built with privacy at its core. You can choose to engage fully anonymously. No personal data is shared with your institution or any third party.' },
-  { q: 'Is JaliMind a replacement for campus counsellors?', a: 'No — JaliMind is designed to support and extend the reach of existing counselling departments, not replace them. We partner directly with universities.' },
-  { q: 'What languages does the AI support?', a: 'Currently English and Swahili, with Igbo, Hausa, Twi, and French planned in our next release phase.' },
-  { q: 'Is JaliMind free for students?', a: 'Access to core features is free for students at partner institutions. Premium features may be available through your university subscription.' },
-];
-
 export default function Home() {
   const [bookingOpen, setBookingOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  // Format services for homepage display
+  const homepageServices = servicesData.slice(0, 6).map(service => ({
+    icon: service.icon,
+    title: service.title,
+    desc: service.desc,
+    href: `/services#${service.id}`,
+  }));
+
+  // Get first 4 counsellors for homepage
+  const featuredCounsellors = counsellorsData.slice(0, 4);
 
   return (
     <>
@@ -78,14 +68,17 @@ export default function Home() {
         position: 'relative', overflow: 'hidden',
         display: 'flex', alignItems: 'center',
       }}>
-        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(139,74,60,0.3) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(74,103,65,0.2) 0%, transparent 40%)' }} />
-        <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '45%', overflow: 'hidden' }}>
-          <div style={{ width: '100%', height: '100%', background: 'linear-gradient(160deg, #4A3020 0%, #6B4A38 50%, #8B6050 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.1)' }}>
-              <Users size={80} /><p style={{ fontSize: 11, marginTop: 8, letterSpacing: 1, fontFamily: 'var(--font-body)' }}>HERO IMAGE PLACEHOLDER</p>
-            </div>
-          </div>
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, #2C1810 0%, transparent 60%)' }} />
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(139,74,60,0.3) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(74,103,65,0.2) 0%, transparent 60%)' }} />
+        <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '55%', overflow: 'hidden' }} className="hero-image-container">
+          <Image
+            src={getHeroAsset('hero-students')?.src || ''}
+            alt={getHeroAsset('hero-students')?.alt || 'University students on campus'}
+            fill
+            style={{ objectFit: 'cover', objectPosition: 'center right', width: '100%', height: '100%' }}
+            priority
+            quality={100}
+          />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, #2C1810 0%, transparent 70%)' }} />
         </div>
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '120px 5% 80px', position: 'relative', zIndex: 2, width: '100%' }}>
           <div style={{ maxWidth: 580 }}>
@@ -147,9 +140,15 @@ export default function Home() {
             onMouseLeave={e => (e.currentTarget as HTMLElement).style.gap = '8px'}
             >Learn more about our mission <ArrowRight size={16} /></Link>
           </Reveal>
-          <Reveal delay={150}>
-            <div style={{ borderRadius: 16, overflow: 'hidden', aspectRatio: '4/3', background: 'linear-gradient(135deg, var(--sand) 0%, #D4C5B0 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-              <div style={{ textAlign: 'center', color: 'rgba(139,74,60,0.25)' }}><Users size={56} /><p style={{ fontSize: 11, marginTop: 8, letterSpacing: 1, textTransform: 'uppercase' }}>Team Photo</p></div>
+          <Reveal delay={200}>
+            <div style={{ borderRadius: 16, overflow: 'hidden', aspectRatio: '4/3', position: 'relative' }}>
+              <Image
+                src={getHeroAsset('hero-team-collaboration')?.src || ''}
+                alt={getHeroAsset('hero-team-collaboration')?.alt || 'The JaliMind team collaborating'}
+                fill
+                style={{ objectFit: 'cover' }}
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
               <div style={{ position: 'absolute', bottom: 20, left: 20, right: 20, background: 'white', borderRadius: 10, padding: '16px 20px', boxShadow: '0 8px 24px rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', gap: 12 }}>
                 <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--terracotta)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><CheckCircle size={20} style={{ color: 'white' }} /></div>
                 <div><p style={{ fontSize: 13, fontWeight: 700, color: 'var(--charcoal)' }}>WHO Recognised Gap</p><p style={{ fontSize: 12, color: 'var(--muted)' }}>75% of youth receive no mental health treatment</p></div>
@@ -183,7 +182,7 @@ export default function Home() {
             <p style={{ fontSize: 16, color: 'var(--muted)', maxWidth: 560, margin: '0 auto', lineHeight: 1.8 }}>Every feature is built around what students actually need — not what fits a Western mental health template.</p>
           </Reveal>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 28 }}>
-            {services.map(({ icon: Icon, title, desc, href }, i) => (
+            {homepageServices.map(({ icon: Icon, title, desc, href }, i) => (
               <Reveal key={i} delay={i * 80}>
                 <Link href={href} style={{ display: 'block', background: 'var(--cream)', borderRadius: 12, padding: '32px 28px', border: '1px solid var(--border)', transition: 'all 0.35s', cursor: 'pointer' }}
                 onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(-6px)'; el.style.boxShadow = '0 20px 48px rgba(0,0,0,0.1)'; el.style.borderColor = 'var(--terracotta)'; }}
@@ -205,8 +204,14 @@ export default function Home() {
         <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 80, alignItems: 'center' }}>
           <Reveal>
             <div style={{ position: 'relative' }}>
-              <div style={{ borderRadius: 16, overflow: 'hidden', aspectRatio: '4/5', background: 'linear-gradient(160deg, #4A3020 0%, #7A5040 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.15)' }}><Headphones size={56} /><p style={{ fontSize: 11, marginTop: 8, letterSpacing: 1, textTransform: 'uppercase', fontFamily: 'var(--font-body)' }}>Counselling Image</p></div>
+              <div style={{ borderRadius: 16, overflow: 'hidden', aspectRatio: '4/5', position: 'relative' }}>
+                <Image
+                  src={getHeroAsset('hero-counselling')?.src || ''}
+                  alt={getHeroAsset('hero-counselling')?.alt || 'Counselor listening to student'}
+                  fill
+                  style={{ objectFit: 'cover', objectPosition: 'center' }}
+                />
+                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(74,40,24,0.4) 0%, rgba(122,80,64,0.6) 100%)' }} />
               </div>
               <div style={{ position: 'absolute', top: 32, right: -20, background: 'var(--terracotta)', color: 'white', borderRadius: 12, padding: '20px 24px', boxShadow: '0 16px 40px rgba(139,74,60,0.35)' }}>
                 <div style={{ fontSize: 28, fontWeight: 900, fontFamily: 'var(--font-display)' }}>100%</div>
@@ -247,7 +252,7 @@ export default function Home() {
             <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 3.5vw, 40px)', fontWeight: 700, color: 'white' }}>What Students Are Saying</h2>
           </Reveal>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
-            {testimonials.map(({ name, university, text }, i) => (
+            {testimonialsData.map(({ name, university, text }, i) => (
               <Reveal key={i} delay={i * 120}>
                 <div style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, padding: '32px 28px', transition: 'border-color 0.3s' }}
                 onMouseEnter={e => (e.currentTarget as HTMLElement).style.borderColor = 'var(--terracotta)'}
@@ -280,14 +285,14 @@ export default function Home() {
             </div>
           </Reveal>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 24 }}>
-            {counsellors.map(({ name, role, specialty, country, color }, i) => (
+            {featuredCounsellors.map(({ name, role, specialty, country, color, image }, i) => (
               <Reveal key={i} delay={i * 100}>
                 <div style={{ borderRadius: 12, overflow: 'hidden', border: '1px solid var(--border)', transition: 'all 0.35s' }}
                 onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(-6px)'; el.style.boxShadow = '0 20px 48px rgba(0,0,0,0.1)'; }}
                 onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(0)'; el.style.boxShadow = 'none'; }}
                 >
-                  <div style={{ height: 220, background: `linear-gradient(160deg, ${color}40 0%, ${color}80 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <div style={{ width: 80, height: 80, borderRadius: '50%', background: color, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><span style={{ color: 'white', fontFamily: 'var(--font-display)', fontSize: 32, fontWeight: 700 }}>{name[0]}</span></div>
+                  <div style={{ position: 'relative', height: 300, width: '100%', overflow: 'hidden' }}>
+                    <Image src={image} alt={name} fill style={{ objectFit: 'cover', objectPosition: 'center' }} />
                   </div>
                   <div style={{ padding: '20px 20px 24px', background: 'var(--cream)' }}>
                     <span style={{ fontSize: 11, color: 'var(--terracotta)', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase' }}>{country}</span>
@@ -337,21 +342,19 @@ export default function Home() {
             </div>
           </Reveal>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
-            {[
-              { title: 'Reducing Exam Anxiety at UNILAG', tag: 'Academic Stress', desc: 'How JaliMind helped 120 students manage pre-examination anxiety through a structured 6-week support programme.', color: '#8B4A3C' },
-              { title: 'Community Forum Impact in Nairobi', tag: 'Peer Support', desc: 'Students at the University of Nairobi built peer support networks that led to a 40% increase in help-seeking behaviour.', color: '#4A6741' },
-              { title: 'Anonymous Sessions: Breaking the Stigma', tag: 'Anonymity & Trust', desc: 'An analysis of how the anonymous session feature enabled first-time counselling access for students who would have otherwise disengaged.', color: '#7A5A3C' },
-            ].map(({ title, tag, desc, color }, i) => (
+            {caseStudiesData.map(({ title, tag, summary, color, thumbnail }, i) => (
               <Reveal key={i} delay={i * 100}>
                 <Link href="/case-studies" style={{ display: 'block', borderRadius: 12, overflow: 'hidden', border: '1px solid var(--border)', transition: 'all 0.35s' }}
                 onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(-6px)'; el.style.boxShadow = '0 20px 48px rgba(0,0,0,0.1)'; }}
                 onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(0)'; el.style.boxShadow = 'none'; }}
                 >
-                  <div style={{ height: 180, background: `linear-gradient(135deg, ${color}60, ${color}aa)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><FileText size={40} style={{ color: 'white', opacity: 0.6 }} /></div>
+                  <div style={{ position: 'relative', height: 180, width: '100%', overflow: 'hidden' }}>
+                    <Image src={thumbnail} alt={title} fill style={{ objectFit: 'cover' }} />
+                  </div>
                   <div style={{ padding: '24px 24px 28px', background: 'white' }}>
                     <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: 'var(--terracotta)' }}>{tag}</span>
                     <h4 style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700, color: 'var(--charcoal)', margin: '10px 0 10px' }}>{title}</h4>
-                    <p style={{ fontSize: 14, color: 'var(--muted)', lineHeight: 1.7 }}>{desc}</p>
+                    <p style={{ fontSize: 14, color: 'var(--muted)', lineHeight: 1.7 }}>{summary.substring(0, 100)}...</p>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 16, color: 'var(--terracotta)', fontSize: 13, fontWeight: 600 }}>Read case study <ChevronRight size={14} /></div>
                   </div>
                 </Link>
@@ -375,7 +378,7 @@ export default function Home() {
           </Reveal>
           <Reveal delay={100}>
             <div>
-              {faqs.map(({ q, a }, i) => (
+              {faqsData.map(({ q, a }, i) => (
                 <div key={i} style={{ borderBottom: '1px solid var(--border)' }}>
                   <button onClick={() => setOpenFaq(openFaq === i ? null : i)} style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 0', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}>
                     <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--charcoal)', paddingRight: 16 }}>{q}</span>
@@ -439,17 +442,20 @@ export default function Home() {
             <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 3.5vw, 40px)', fontWeight: 700, color: 'var(--charcoal)' }}>Latest from the Blog</h2>
           </Reveal>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 28 }}>
-            {[
-              { title: 'Understanding Exam Anxiety and How to Manage It', tag: 'Mental Health', date: 'January 2026', readTime: '5 min read' },
-              { title: 'How Anonymous Counselling is Transforming African Campuses', tag: 'Platform', date: 'February 2026', readTime: '7 min read' },
-              { title: 'Building Emotional Resilience as a University Student', tag: 'Wellbeing', date: 'February 2026', readTime: '4 min read' },
-            ].map(({ title, tag, date, readTime }, i) => (
+            {blogPostsData.slice(0, 3).map(({ title, tag, date, readTime, image, color }, i) => (
               <Reveal key={i} delay={i * 100}>
                 <Link href="/blog" style={{ display: 'block', borderRadius: 12, overflow: 'hidden', border: '1px solid var(--border)', transition: 'all 0.35s' }}
                 onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(-4px)'; el.style.boxShadow = '0 16px 40px rgba(0,0,0,0.08)'; }}
                 onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(0)'; el.style.boxShadow = 'none'; }}
                 >
-                  <div style={{ height: 180, background: `linear-gradient(135deg, var(--sand), var(--cream))`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><BookOpen size={36} style={{ color: 'var(--terracotta)', opacity: 0.5 }} /></div>
+                  <div style={{ height: 300, background: `linear-gradient(135deg, ${color}30, ${color}70)`, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
+                    <Image
+                      src={image}
+                      alt={title}
+                      fill
+                      style={{ objectFit: 'cover', objectPosition: 'center' }}
+                    />
+                  </div>
                   <div style={{ padding: '24px 24px 28px', background: 'white' }}>
                     <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: 'var(--terracotta)' }}>{tag}</span>
                     <h4 style={{ fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700, color: 'var(--charcoal)', margin: '10px 0 12px', lineHeight: 1.4 }}>{title}</h4>

@@ -33,3 +33,94 @@ img { max-width: 100%; display: block; }
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--cream); }
 ::-webkit-scrollbar-thumb { background: var(--terracotta); border-radius: 3px; }
+
+/* Mobile Touch-Friendly Spacing */
+button, a, input, textarea, select {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+  body {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  
+  h1 {
+    font-size: clamp(28px, 6vw, 48px);
+  }
+  
+  h2 {
+    font-size: clamp(24px, 5vw, 40px);
+  }
+  
+  h3 {
+    font-size: clamp(18px, 4vw, 28px);
+  }
+}
+
+/* Tablet and Desktop - optimize hero image */
+@media (min-width: 768px) {
+  .hero-image-container {
+    width: 55% !important;
+    right: 0 !important;
+    left: auto !important;
+  }
+}
+
+/* Mobile Layout Adjustments */
+@media (max-width: 640px) {
+  section {
+    padding-left: 5% !important;
+    padding-right: 5% !important;
+  }
+  
+  /* Hero image responsiveness */
+  .hero-image-container {
+    width: 100% !important;
+    right: auto !important;
+    left: 0 !important;
+  }
+  
+  /* Touch target minimum for all interactive elements */
+  button:not(:disabled),
+  a[href],
+  input[type="button"],
+  input[type="submit"] {
+    padding: clamp(12px, 4vw, 16px) clamp(16px, 5vw, 24px) !important;
+    min-height: 48px !important;
+  }
+  
+  /* Form inputs */
+  input:not([type="checkbox"]):not([type="radio"]),
+  textarea,
+  select {
+    padding: 14px 12px !important;
+    font-size: 16px !important;
+    min-height: 48px !important;
+  }
+  
+  /* Prevent zoom on input focus (iOS) */
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}
+
+/* Ultra-mobile devices (< 375px) */
+@media (max-width: 375px) {
+  :root {
+    font-size: 14px;
+  }
+  
+  h1 {
+    font-size: clamp(24px, 8vw, 32px);
+  }
+  
+  button {
+    padding: 12px 16px !important;
+    font-size: 13px !important;
+  }
+}

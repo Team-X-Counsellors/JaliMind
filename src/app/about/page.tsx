@@ -3,7 +3,10 @@ import { useRef, useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
-import { ArrowRight, Target, Eye, Heart, Globe, Users, CheckCircle } from 'lucide-react';
+import Image from 'next/image';
+import { ArrowRight, Target, Eye, Heart, Globe } from 'lucide-react';
+import { teamData } from '@/data/team';
+import { getHeroAsset } from '@/data/heroAssets';
 
 function Reveal({ children, delay = 0, style = {} }: { children: React.ReactNode; delay?: number; style?: React.CSSProperties }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -17,14 +20,6 @@ function Reveal({ children, delay = 0, style = {} }: { children: React.ReactNode
     <div ref={ref} style={{ opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(28px)', transition: `opacity 0.65s ease ${delay}ms, transform 0.65s ease ${delay}ms`, ...style }}>{children}</div>
   );
 }
-
-const team = [
-  { name: 'Kosisochukwu Moronu', role: 'Product & Project Manager', country: 'Nigeria', color: '#8B4A3C', bio: 'Driving product vision and team coordination across JaliMind.' },
-  { name: 'Joy Mwendi', role: 'Documentation & Research', country: 'Kenya', color: '#4A6741', bio: 'Leads research analysis and ensures every insight shapes the platform.' },
-  { name: 'Florida Korir', role: 'Marketing & Regulatory', country: 'Kenya', color: '#C4A882', bio: 'Navigating compliance and communicating JaliMind\'s mission to the world.' },
-  { name: 'Winnie', role: 'UI/UX & Frontend Development', country: 'Ghana', color: '#7A5A3C', bio: 'Designing beautiful, accessible interfaces that students actually want to use.' },
-  { name: 'Paul', role: 'Full-Stack Development', country: 'Pan-African', color: '#5A7A8A', bio: 'Building the technical backbone that makes JaliMind reliable and scalable.' },
-];
 
 export default function About() {
   return (
@@ -81,8 +76,13 @@ export default function About() {
             </div>
           </Reveal>
           <Reveal delay={150}>
-            <div style={{ borderRadius: 16, overflow: 'hidden', aspectRatio: '1/1', background: 'linear-gradient(135deg, var(--sand), #D4C5B0)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-              <div style={{ textAlign: 'center', color: 'rgba(139,74,60,0.25)' }}><Globe size={64} /><p style={{ fontSize: 11, marginTop: 8, letterSpacing: 1, textTransform: 'uppercase' }}>Pan-Africa Map</p></div>
+            <div style={{ borderRadius: 16, overflow: 'hidden', aspectRatio: '1/1', position: 'relative' }}>
+              <Image
+                src={getHeroAsset('about-map')?.src || ''}
+                alt={getHeroAsset('about-map')?.alt || 'Pan-Africa map showing JaliMind presence'}
+                fill
+                style={{ objectFit: 'cover' }}
+              />
               <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(to top, var(--terracotta) 0%, transparent 100%)', height: '50%', display: 'flex', alignItems: 'flex-end', padding: '24px' }}>
                 <p style={{ color: 'white', fontSize: 14, fontWeight: 600, lineHeight: 1.5 }}>Nigeria · Kenya · Ghana<br /><span style={{ fontSize: 12, opacity: 0.8 }}>And growing across the continent</span></p>
               </div>
@@ -99,16 +99,19 @@ export default function About() {
             <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 3.5vw, 40px)', fontWeight: 700, color: 'var(--charcoal)' }}>Meet the JaliMind Team</h2>
           </Reveal>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 24 }}>
-            {team.map(({ name, role, country, color, bio }, i) => (
+            {teamData.map(({ name, role, country, color, bio, image }, i) => (
               <Reveal key={i} delay={i * 80}>
                 <div style={{ background: 'white', borderRadius: 12, overflow: 'hidden', border: '1px solid var(--border)', transition: 'all 0.35s' }}
                 onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(-4px)'; el.style.boxShadow = '0 16px 40px rgba(0,0,0,0.08)'; }}
                 onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(0)'; el.style.boxShadow = 'none'; }}
                 >
-                  <div style={{ height: 160, background: `linear-gradient(160deg, ${color}30, ${color}60)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <div style={{ width: 72, height: 72, borderRadius: '50%', background: color, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <span style={{ color: 'white', fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700 }}>{name[0]}</span>
-                    </div>
+                  <div style={{ height: 250, position: 'relative', overflow: 'hidden' }}>
+                    <Image
+                      src={image}
+                      alt={name}
+                      fill
+                      style={{ objectFit: 'cover', objectPosition: 'center' }}
+                    />
                   </div>
                   <div style={{ padding: '20px 20px 24px' }}>
                     <span style={{ fontSize: 11, color: 'var(--terracotta)', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase' }}>{country}</span>

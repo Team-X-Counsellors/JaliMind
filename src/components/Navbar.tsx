@@ -70,7 +70,16 @@ export default function Navbar() {
               onMouseLeave={e => (e.currentTarget.style.color = scrolled ? 'var(--charcoal)' : 'rgba(255,255,255,0.9)')}
               >{l.label}</Link>
             ))}
-            <Link href="/contact" style={{
+            <Link href="/auth/login" style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 14, fontWeight: 500,
+              color: scrolled ? 'var(--charcoal)' : 'rgba(255,255,255,0.9)',
+              transition: 'color 0.3s',
+            }}
+            onMouseEnter={e => (e.currentTarget.style.color = 'var(--terracotta)')}
+            onMouseLeave={e => (e.currentTarget.style.color = scrolled ? 'var(--charcoal)' : 'rgba(255,255,255,0.9)')}
+            >Sign In</Link>
+            <Link href="/auth/register" style={{
               background: 'var(--terracotta)',
               color: 'white',
               padding: '10px 24px',
@@ -116,12 +125,17 @@ export default function Navbar() {
             {l.label}
           </Link>
         ))}
-        <Link href="/contact" onClick={() => setOpen(false)} style={{
-          display: 'block', marginTop: 20,
+        <Link href="/auth/login" onClick={() => setOpen(false)} style={{
+          display: 'block', marginTop: 16,
+          padding: '12px 0', borderBottom: '1px solid var(--border)',
+          fontSize: 15, fontWeight: 500, color: 'var(--charcoal)',
+        }}>Sign In</Link>
+        <Link href="/auth/register" onClick={() => setOpen(false)} style={{
+          display: 'block', marginTop: 16,
           background: 'var(--terracotta)', color: 'white',
           padding: '12px 24px', borderRadius: 4,
           fontSize: 14, fontWeight: 600, textAlign: 'center',
-        }}>Get Started</Link>
+        }}>Get Started — It&apos;s Free</Link>
       </div>
 
       <style>{`

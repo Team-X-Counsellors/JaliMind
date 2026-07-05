@@ -100,14 +100,14 @@ export default function Home() {
               Confidential guidance and counselling designed for university students across Africa. Talk, learn, or find community — JaliMind is built for you.
             </p>
             <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', animation: 'fadeInUp 0.9s ease 0.4s both' }}>
-              <Link href="/services" style={{ background: 'white', color: 'var(--terracotta-dark)', padding: '15px 32px', borderRadius: 6, fontSize: 15, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 8, transition: 'all 0.3s' }}
+              <Link href="/auth/register" style={{ background: 'white', color: 'var(--terracotta-dark)', padding: '15px 32px', borderRadius: 6, fontSize: 15, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 8, transition: 'all 0.3s' }}
               onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(-2px)'; el.style.boxShadow = '0 12px 32px rgba(0,0,0,0.3)'; }}
               onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(0)'; el.style.boxShadow = 'none'; }}
-              >Explore Services <ArrowRight size={16} /></Link>
-              <button onClick={() => setBookingOpen(true)} style={{ background: 'transparent', border: '2px solid rgba(255,255,255,0.4)', color: 'white', padding: '15px 32px', borderRadius: 6, fontSize: 15, fontWeight: 600, cursor: 'pointer', transition: 'all 0.3s' }}
+              >Get Started — It&apos;s Free <ArrowRight size={16} /></Link>
+              <Link href="/auth/login" style={{ background: 'transparent', border: '2px solid rgba(255,255,255,0.4)', color: 'white', padding: '15px 32px', borderRadius: 6, fontSize: 15, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 8, transition: 'all 0.3s' }}
               onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'white'; el.style.background = 'rgba(255,255,255,0.1)'; }}
               onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'rgba(255,255,255,0.4)'; el.style.background = 'transparent'; }}
-              >Book a Session</button>
+              >Sign In</Link>
             </div>
             <div style={{ display: 'flex', gap: 32, marginTop: 48, animation: 'fadeInUp 0.9s ease 0.55s both', flexWrap: 'wrap' }}>
               {[{ val: '100%', label: 'Confidential' }, { val: 'Free', label: 'For Students' }, { val: '4+', label: 'Languages' }].map((s, i) => (
@@ -231,10 +231,10 @@ export default function Home() {
                 </div>
               </div>
             ))}
-            <button onClick={() => setBookingOpen(true)} style={{ marginTop: 16, background: 'var(--terracotta)', color: 'white', border: 'none', padding: '14px 32px', borderRadius: 6, fontSize: 15, fontWeight: 600, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 8, transition: 'all 0.3s' }}
+            <Link href="/auth/register" style={{ marginTop: 16, background: 'var(--terracotta)', color: 'white', padding: '14px 32px', borderRadius: 6, fontSize: 15, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 8, transition: 'all 0.3s' }}
             onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'var(--terracotta-dark)'; el.style.transform = 'translateY(-2px)'; }}
             onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'var(--terracotta)'; el.style.transform = 'translateY(0)'; }}
-            >Book Free Consultation <ArrowRight size={16} /></button>
+            >Get Started Free <ArrowRight size={16} /></Link>
           </Reveal>
         </div>
       </section>
@@ -294,10 +294,10 @@ export default function Home() {
                     <h4 style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700, color: 'var(--charcoal)', margin: '6px 0 4px' }}>{name}</h4>
                     <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 4 }}>{role}</p>
                     <p style={{ fontSize: 12, color: 'var(--terracotta)', fontWeight: 600 }}>{specialty}</p>
-                    <button onClick={() => setBookingOpen(true)} style={{ marginTop: 16, width: '100%', background: 'none', border: '1.5px solid var(--terracotta)', color: 'var(--terracotta)', padding: '10px', borderRadius: 6, fontSize: 13, fontWeight: 600, cursor: 'pointer', transition: 'all 0.3s' }}
+                    <Link href="/auth/register" style={{ marginTop: 16, display: 'block', textAlign: 'center', background: 'none', border: '1.5px solid var(--terracotta)', color: 'var(--terracotta)', padding: '10px', borderRadius: 6, fontSize: 13, fontWeight: 600, transition: 'all 0.3s' }}
                     onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'var(--terracotta)'; el.style.color = 'white'; }}
                     onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'none'; el.style.color = 'var(--terracotta)'; }}
-                    >Book a Session</button>
+                    >Book a Session</Link>
                   </div>
                 </div>
               </Reveal>
@@ -314,14 +314,14 @@ export default function Home() {
             <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 800, color: 'white', marginBottom: 16 }}>Claim Your Free Consultation<br />and Begin Healing Today</h2>
             <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.8)', maxWidth: 520, margin: '0 auto 36px', lineHeight: 1.8 }}>You deserve support. Take the first step — no commitment, no pressure, and completely confidential.</p>
             <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
-              <button onClick={() => setBookingOpen(true)} style={{ background: 'white', color: 'var(--terracotta-dark)', border: 'none', padding: '16px 36px', borderRadius: 6, fontSize: 16, fontWeight: 700, cursor: 'pointer', transition: 'all 0.3s' }}
+              <Link href="/auth/register" style={{ background: 'white', color: 'var(--terracotta-dark)', padding: '16px 36px', borderRadius: 6, fontSize: 16, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 8, transition: 'all 0.3s' }}
               onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(-2px)'; el.style.boxShadow = '0 12px 32px rgba(0,0,0,0.25)'; }}
               onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(0)'; el.style.boxShadow = 'none'; }}
-              >Book Free Consultation</button>
-              <Link href="/services" style={{ border: '2px solid rgba(255,255,255,0.5)', color: 'white', padding: '16px 36px', borderRadius: 6, fontSize: 16, fontWeight: 600, transition: 'all 0.3s', display: 'inline-block' }}
+              >Create Free Account <ArrowRight size={16} /></Link>
+              <Link href="/auth/login" style={{ border: '2px solid rgba(255,255,255,0.5)', color: 'white', padding: '16px 36px', borderRadius: 6, fontSize: 16, fontWeight: 600, transition: 'all 0.3s', display: 'inline-block' }}
               onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.1)'}
               onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
-              >Explore Services</Link>
+              >Sign In</Link>
             </div>
           </Reveal>
         </div>
@@ -409,22 +409,18 @@ export default function Home() {
           </Reveal>
           <Reveal delay={100}>
             <div style={{ background: 'white', borderRadius: 16, padding: '40px', border: '1px solid var(--border)', boxShadow: '0 8px 32px rgba(0,0,0,0.06)' }}>
-              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 700, color: 'var(--charcoal)', marginBottom: 8 }}>Request a Session</h3>
-              <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 28 }}>Booking will be available soon. Leave your details to be notified at launch.</p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                {['Full Name', 'University / Institution', 'Email Address'].map(label => (
-                  <div key={label}>
-                    <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: 'var(--charcoal)', marginBottom: 6 }}>{label}</label>
-                    <input type="text" placeholder={`Enter your ${label.toLowerCase()}`} style={{ width: '100%', padding: '12px 14px', border: '1.5px solid var(--border)', borderRadius: 6, fontSize: 14, fontFamily: 'var(--font-body)', color: 'var(--charcoal)', background: 'var(--cream)', outline: 'none', transition: 'border-color 0.3s' }}
-                    onFocus={e => (e.currentTarget as HTMLElement).style.borderColor = 'var(--terracotta)'}
-                    onBlur={e => (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'}
-                    />
-                  </div>
-                ))}
-                <button onClick={() => setBookingOpen(true)} style={{ background: 'var(--terracotta)', color: 'white', border: 'none', padding: '14px', borderRadius: 6, fontSize: 15, fontWeight: 600, cursor: 'pointer', marginTop: 8, transition: 'background 0.3s' }}
-                onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'var(--terracotta-dark)'}
-                onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'var(--terracotta)'}
-                >Book Appointment</button>
+              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 700, color: 'var(--charcoal)', marginBottom: 8 }}>Ready to Begin?</h3>
+              <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 28, lineHeight: 1.75 }}>Create a free account and access JaliBot AI, anonymous Shadow Chat, our counsellor directory, and the Jali Library — all in one place.</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <Link href="/auth/register" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'var(--terracotta)', color: 'white', padding: '15px', borderRadius: 6, fontSize: 15, fontWeight: 700, transition: 'all 0.3s' }}
+                onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'var(--terracotta-dark)'; el.style.transform = 'translateY(-2px)'; }}
+                onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'var(--terracotta)'; el.style.transform = 'translateY(0)'; }}
+                >Create Free Account <ArrowRight size={16} /></Link>
+                <Link href="/auth/login" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'none', border: '1.5px solid var(--border)', color: 'var(--charcoal)', padding: '14px', borderRadius: 6, fontSize: 14, fontWeight: 600, transition: 'all 0.3s' }}
+                onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'var(--terracotta)'; el.style.color = 'var(--terracotta)'; }}
+                onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'var(--border)'; el.style.color = 'var(--charcoal)'; }}
+                >Already have an account? Sign In</Link>
+                <p style={{ fontSize: 12, color: 'var(--muted)', textAlign: 'center', marginTop: 4 }}>100% confidential · No credit card required</p>
               </div>
             </div>
           </Reveal>

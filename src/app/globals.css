@@ -1,35 +1,81 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --cream: #F9F5F0;
-  --warm-white: #FDFAF6;
-  --sand: #EDE8DF;
-  --terracotta: #8B4A3C;
-  --terracotta-light: #A85B4A;
-  --terracotta-dark: #6B3228;
-  --sage: #4A6741;
-  --sage-light: #6B8F68;
-  --charcoal: #2C2C2C;
-  --charcoal-soft: #3D3D3D;
-  --muted: #6B6560;
-  --border: #DDD8D0;
-  --font-display: 'Playfair Display', Georgia, serif;
-  --font-body: 'Poppins', sans-serif;
-}
+@layer base {
+  :root {
+    /* shadcn token mappings → terracotta palette */
+    --background: 40 30% 98%;
+    --foreground: 0 0% 17%;
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: var(--font-body);
-  background-color: var(--warm-white);
-  color: var(--charcoal);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
+    --card: 36 35% 97%;
+    --card-foreground: 0 0% 17%;
+
+    --popover: 40 30% 98%;
+    --popover-foreground: 0 0% 17%;
+
+    --primary: 9 42% 39%;
+    --primary-foreground: 36 100% 98%;
+
+    --secondary: 36 20% 88%;
+    --secondary-foreground: 9 35% 30%;
+
+    --muted: 36 18% 90%;
+    --muted-foreground: 25 8% 42%;
+
+    --accent: 120 18% 34%;
+    --accent-foreground: 36 100% 98%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 36 18% 85%;
+    --input: 36 18% 85%;
+    --ring: 9 42% 39%;
+
+    --radius: 0.5rem;
+
+    /* Brand aliases (kept for legacy CSS in marketing pages) */
+    --cream: #F9F5F0;
+    --warm-white: #FDFAF6;
+    --sand: #EDE8DF;
+    --terracotta: #8B4A3C;
+    --terracotta-light: #A85B4A;
+    --terracotta-dark: #6B3228;
+    --sage: #4A6741;
+    --sage-light: #6B8F68;
+    --charcoal: #2C2C2C;
+    --charcoal-soft: #3D3D3D;
+    --muted-raw: #6B6560;
+    --border-raw: #DDD8D0;
+  }
+
+  * {
+    @apply border-border;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-jakarta), system-ui, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-bricolage), Georgia, serif;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  img { max-width: 100%; display: block; }
+
+  ::selection { background: var(--terracotta); color: white; }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--cream); }
+  ::-webkit-scrollbar-thumb { background: var(--terracotta); border-radius: 3px; }
 }
-h1, h2, h3, h4 { font-family: var(--font-display); }
-a { color: inherit; text-decoration: none; }
-img { max-width: 100%; display: block; }
-::selection { background: var(--terracotta); color: white; }
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--cream); }
-::-webkit-scrollbar-thumb { background: var(--terracotta); border-radius: 3px; }

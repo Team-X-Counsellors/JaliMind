@@ -30,6 +30,7 @@ api.interceptors.response.use(
       } catch {
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
+        document.cookie = 'jalimind_session=; path=/; max-age=0';
         window.location.href = '/auth/login';
       }
     }

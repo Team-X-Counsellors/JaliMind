@@ -15,6 +15,28 @@ interface Message {
   animate?: boolean;
 }
 
+interface SpeechRecognitionResultEvent extends Event {
+  results: { [index: number]: { [index: number]: { transcript: string } } };
+}
+
+interface SpeechRecognitionLike extends EventTarget {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  start: () => void;
+  stop: () => void;
+  onresult: ((event: SpeechRecognitionResultEvent) => void) | null;
+  onend: (() => void) | null;
+  onerror: (() => void) | null;
+}
+
+declare global {
+  interface Window {
+    SpeechRecognition?: new () => SpeechRecognitionLike;
+    webkitSpeechRecognition?: new () => SpeechRecognitionLike;
+  }
+}
+
 const WELCOME_MESSAGE: Message = {
   role: 'bot',
   content:
@@ -48,11 +70,61 @@ export default function JalibotPage() {
   const [crisisDetected, setCrisisDetected] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [conversations, setConversations] = useState<ConversationSummary[]>([]);
+  const [speakingIndex, setSpeakingIndex] = useState<number | null>(null);
+  const [listening, setListening] = useState(false);
+  const [speechSupported, setSpeechSupported] = useState(false);
+  const [recognitionSupported, setRecognitionSupported] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  useEffect(() => {
+    setSpeechSupported('speechSynthesis' in window);
+    setRecognitionSupported(!!(window.SpeechRecognition || window.webkitSpeechRecognition));
+    return () => {
+      window.speechSynthesis?.cancel();
+      recognitionRef.current?.stop();
+    };
+  }, []);
+
+  const speak = (text: string, index: number) => {
+    if (!speechSupported) return;
+    window.speechSynthesis.cancel();
+    if (speakingIndex === index) {
+      setSpeakingIndex(null);
+      return;
+    }
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.onend = () => setSpeakingIndex(null);
+    utterance.onerror = () => setSpeakingIndex(null);
+    setSpeakingIndex(index);
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const toggleListening = () => {
+    if (listening) {
+      recognitionRef.current?.stop();
+      return;
+    }
+    const RecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!RecognitionCtor) return;
+    const recognition = new RecognitionCtor();
+    recognition.lang = 'en-US';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      setInput((prev) => (prev ? `${prev} ${transcript}` : transcript));
+    };
+    recognition.onend = () => setListening(false);
+    recognition.onerror = () => setListening(false);
+    recognitionRef.current = recognition;
+    recognition.start();
+    setListening(true);
+  };
 
   const loadHistoryList = useCallback(async () => {
     try {
@@ -70,6 +142,8 @@ export default function JalibotPage() {
         role: m.role === 'user' ? 'user' : 'bot',
         content: m.content,
       }));
+      window.speechSynthesis?.cancel();
+      setSpeakingIndex(null);
       setMessages(hydrated.length > 0 ? hydrated : [WELCOME_MESSAGE]);
       setConversationId(id);
       setCrisisDetected(data.crisis_detected);
@@ -89,6 +163,8 @@ export default function JalibotPage() {
   }, []);
 
   const startNewConversation = () => {
+    window.speechSynthesis?.cancel();
+    setSpeakingIndex(null);
     setMessages([WELCOME_MESSAGE]);
     setConversationId(null);
     setCrisisDetected(false);
@@ -185,6 +261,14 @@ export default function JalibotPage() {
                 ) : (
                   <p className="whitespace-pre-wrap">{msg.content}</p>
                 )}
+                {msg.role === 'bot' && speechSupported && (
+                  <button
+                    onClick={() => speak(msg.content, i)}
+                    className="text-xs text-primary mt-1 hover:underline"
+                  >
+                    {speakingIndex === i ? 'Stop' : 'Read aloud'}
+                  </button>
+                )}
               </motion.div>
             </div>
           ))}
@@ -203,10 +287,20 @@ export default function JalibotPage() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKey}
-            placeholder="Type a message…"
+            placeholder={listening ? 'Listening…' : 'Type a message…'}
             disabled={loading}
             className="flex-1"
           />
+          {recognitionSupported && (
+            <Button
+              type="button"
+              variant={listening ? 'destructive' : 'outline'}
+              onClick={toggleListening}
+              disabled={loading}
+            >
+              {listening ? 'Stop' : 'Speak'}
+            </Button>
+          )}
           <Button onClick={send} disabled={loading || !input.trim()}>Send</Button>
         </div>
       </div>

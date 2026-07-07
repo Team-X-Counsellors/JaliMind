@@ -8,8 +8,8 @@ export default function Footer() {
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: 48,
-          paddingBottom: 56,
+          gap: 'clamp(32px, 5vw, 48px)',
+          paddingBottom: 'clamp(40px, 5vw, 56px)',
           borderBottom: '1px solid rgba(255,255,255,0.1)',
         }}>
           {/* Brand */}
@@ -30,14 +30,16 @@ export default function Footer() {
             <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', lineHeight: 1.8, marginBottom: 24 }}>
               Empowering university students across Africa with accessible, confidential guidance and mental health support.
             </p>
-            <div style={{ display: 'flex', gap: 12 }}>
+            <div style={{ display: 'flex', gap: 16 }}>
               {[Twitter, Linkedin, Instagram, Facebook].map((Icon, i) => (
-                <a key={i} href="#" style={{
-                  width: 36, height: 36, borderRadius: '50%',
-                  border: '1px solid rgba(255,255,255,0.2)',
+                <a key={i} href="#" aria-label={['Twitter', 'LinkedIn', 'Instagram', 'Facebook'][i]} style={{
+                  width: 44, height: 44, borderRadius: '50%',
+                  border: '2px solid rgba(255,255,255,0.2)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   color: 'rgba(255,255,255,0.6)',
                   transition: 'all 0.3s',
+                  minWidth: '44px',
+                  minHeight: '44px',
                 }}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--terracotta)'; (e.currentTarget as HTMLElement).style.borderColor = 'var(--terracotta)'; (e.currentTarget as HTMLElement).style.color = 'white'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.2)'; (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.6)'; }}
@@ -58,8 +60,9 @@ export default function Footer() {
               { href: '/blog', label: 'Blog' },
             ].map(l => (
               <Link key={l.href} href={l.href} style={{
-                display: 'block', color: 'rgba(255,255,255,0.65)', fontSize: 14,
-                marginBottom: 12, transition: 'color 0.3s',
+                display: 'flex', alignItems: 'center', color: 'rgba(255,255,255,0.65)', fontSize: 14,
+                marginBottom: 16, transition: 'color 0.3s',
+                minHeight: '44px',
               }}
               onMouseEnter={e => (e.currentTarget.style.color = 'var(--terracotta-light)')}
               onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.65)')}
@@ -79,8 +82,9 @@ export default function Footer() {
               { href: '/services#referral', label: 'Referral System' },
             ].map(l => (
               <Link key={l.href} href={l.href} style={{
-                display: 'block', color: 'rgba(255,255,255,0.65)', fontSize: 14,
-                marginBottom: 12, transition: 'color 0.3s',
+                display: 'flex', alignItems: 'center', color: 'rgba(255,255,255,0.65)', fontSize: 14,
+                marginBottom: 16, transition: 'color 0.3s',
+                minHeight: '44px',
               }}
               onMouseEnter={e => (e.currentTarget.style.color = 'var(--terracotta-light)')}
               onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.65)')}
@@ -111,15 +115,15 @@ export default function Footer() {
         {/* Bottom bar */}
         <div style={{
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-          padding: '24px 0',
-          flexWrap: 'wrap', gap: 12,
+          padding: '28px 0',
+          flexWrap: 'wrap', gap: 16,
         }}>
           <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)' }}>
             &copy; {new Date().getFullYear()} JaliMind. All rights reserved.
           </p>
-          <div style={{ display: 'flex', gap: 24 }}>
+          <div style={{ display: 'flex', gap: 'clamp(12px, 3vw, 24px)' }}>
             {['/privacy', '/terms', '/accessibility'].map((href, i) => (
-              <Link key={i} href={href} style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', transition: 'color 0.3s' }}
+              <Link key={i} href={href} style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', transition: 'color 0.3s', minHeight: '44px', display: 'flex', alignItems: 'center', padding: '0 8px' }}
               onMouseEnter={e => (e.currentTarget.style.color = 'white')}
               onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.4)')}
               >{['Privacy Policy', 'Terms of Service', 'Accessibility'][i]}</Link>

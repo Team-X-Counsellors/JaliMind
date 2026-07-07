@@ -2,7 +2,8 @@
 import { useRef, useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { MessageCircle, Heart, Users, Shield, TrendingUp, Plus, Search, Pin } from 'lucide-react';
+import { Plus, Search, Pin, MessageCircle, Heart, Shield } from 'lucide-react';
+import { communityCategoriesData, communityThreadsData } from '@/data/community';
 
 function Reveal({ children, delay = 0, style = {} }: { children: React.ReactNode; delay?: number; style?: React.CSSProperties }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -17,29 +18,13 @@ function Reveal({ children, delay = 0, style = {} }: { children: React.ReactNode
   );
 }
 
-const categories = [
-  { label: 'Academic Pressure', count: 142, color: '#8B4A3C', icon: TrendingUp },
-  { label: 'Anxiety & Stress', count: 98, color: '#4A6741', icon: Heart },
-  { label: 'Relationships', count: 76, color: '#C4956A', icon: Users },
-  { label: 'Identity & Culture', count: 54, color: '#5A7A8A', icon: Shield },
-  { label: 'Career & Purpose', count: 89, color: '#7A5A3C', icon: MessageCircle },
-  { label: 'General Wellbeing', count: 203, color: '#6B4A8A', icon: Heart },
-];
 
-const threads = [
-  { pinned: true, title: 'How I managed exam anxiety without medication — my 6-week journey', category: 'Academic Pressure', author: 'Anonymous Student', university: 'UNILAG', replies: 34, likes: 87, time: '2 hours ago', excerpt: 'I want to share what worked for me because I know how desperate it can feel when every technique seems to fail...' },
-  { pinned: false, title: 'Does anyone else feel like they cannot talk to their parents about mental health?', category: 'Identity & Culture', author: 'K. Mwangi', university: 'University of Nairobi', replies: 61, likes: 120, time: '5 hours ago', excerpt: 'My family comes from a background where mental health is not discussed openly. I have tried to explain what I\'m going through but...' },
-  { pinned: false, title: 'Practical tips for managing group project stress (especially when teammates disappear)', category: 'Academic Pressure', author: 'Temi O.', university: 'KNUST', replies: 28, likes: 45, time: '1 day ago', excerpt: 'Second year engineering student here. Group projects are the bane of my existence and I have learned some things the hard way...' },
-  { pinned: false, title: 'Finding community as a first-generation university student', category: 'Identity & Culture', author: 'Amara D.', university: 'UCT', replies: 19, likes: 63, time: '2 days ago', excerpt: 'Nobody in my family has ever attended university and I thought I would feel proud. But mostly I just feel like an outsider...' },
-  { pinned: false, title: 'Swahili-speaking students: let us create a support thread here', category: 'General Wellbeing', author: 'Aisha M.', university: 'University of Nairobi', replies: 47, likes: 91, time: '3 days ago', excerpt: 'Ninaona kwamba wengi wetu tunapambana lakini hatuna mahali pa kuzungumza kwa Kiswahili. Karibu hapa...' },
-  { pinned: false, title: 'Resources that actually helped my depression — a curated list', category: 'Anxiety & Stress', author: 'Anonymous', university: 'Makerere', replies: 52, likes: 134, time: '4 days ago', excerpt: 'I have been through three counsellors and countless YouTube videos. Here is what genuinely moved the needle for me...' },
-];
 
 export default function Community() {
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
 
-  const filtered = threads.filter(t =>
+  const filtered = communityThreadsData.filter(t =>
     (activeCategory === 'All' || t.category === activeCategory) &&
     (search === '' || t.title.toLowerCase().includes(search.toLowerCase()))
   );
@@ -73,7 +58,7 @@ export default function Community() {
 
             <h3 style={{ fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--muted)', marginBottom: 12 }}>Browse by Topic</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-              {['All', ...categories.map(c => c.label)].map(cat => (
+              {['All', ...communityCategoriesData.map(c => c.label)].map(cat => (
                 <button key={cat} onClick={() => setActiveCategory(cat)} style={{
                   width: '100%', textAlign: 'left', padding: '10px 14px', borderRadius: 8, border: 'none',
                   background: activeCategory === cat ? 'var(--terracotta)' : 'transparent',

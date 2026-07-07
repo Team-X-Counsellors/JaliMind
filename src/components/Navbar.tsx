@@ -82,10 +82,13 @@ export default function Navbar() {
             <Link href="/auth/register" style={{
               background: 'var(--terracotta)',
               color: 'white',
-              padding: '10px 24px',
+              padding: '12px 28px',
               borderRadius: 4,
               fontSize: 14, fontWeight: 600,
               transition: 'background 0.3s, transform 0.2s',
+              minHeight: '44px',
+              display: 'flex',
+              alignItems: 'center',
             }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--terracotta-dark)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--terracotta)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}
@@ -95,10 +98,18 @@ export default function Navbar() {
           <button
             onClick={() => setOpen(!open)}
             style={{
-              display: 'none', background: 'none', border: 'none', cursor: 'pointer',
+              background: 'none', border: 'none', cursor: 'pointer',
               color: scrolled ? 'var(--charcoal)' : 'white',
+              padding: '8px',
+              minWidth: '44px',
+              minHeight: '44px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
             className="hamburger"
+            aria-label="Toggle navigation menu"
+            aria-expanded={open}
           >
             {open ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -118,9 +129,12 @@ export default function Navbar() {
           <Link key={l.href} href={l.href}
             onClick={() => setOpen(false)}
             style={{
-              display: 'block', padding: '12px 0',
+              display: 'flex',
+              alignItems: 'center',
+              padding: '16px 0',
               borderBottom: '1px solid var(--border)',
               fontSize: 15, fontWeight: 500, color: 'var(--charcoal)',
+              minHeight: '44px',
             }}>
             {l.label}
           </Link>
@@ -131,10 +145,12 @@ export default function Navbar() {
           fontSize: 15, fontWeight: 500, color: 'var(--charcoal)',
         }}>Sign In</Link>
         <Link href="/auth/register" onClick={() => setOpen(false)} style={{
-          display: 'block', marginTop: 16,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          marginTop: 16,
           background: 'var(--terracotta)', color: 'white',
-          padding: '12px 24px', borderRadius: 4,
-          fontSize: 14, fontWeight: 600, textAlign: 'center',
+          padding: '16px 28px', borderRadius: 4,
+          fontSize: 14, fontWeight: 600,
+          minHeight: '48px',
         }}>Get Started — It&apos;s Free</Link>
       </div>
 
@@ -142,6 +158,9 @@ export default function Navbar() {
         @media (max-width: 768px) {
           .nav-links { display: none !important; }
           .hamburger { display: flex !important; }
+        }
+        @media (max-width: 480px) {
+          .hamburger { min-width: 48px; min-height: 48px; }
         }
       `}</style>
     </>

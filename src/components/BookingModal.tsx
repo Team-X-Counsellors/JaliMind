@@ -19,19 +19,21 @@ export default function BookingModal({ isOpen, onClose }: Props) {
       <div style={{
         background: 'var(--warm-white)',
         borderRadius: 16,
-        padding: '48px 40px',
+        padding: 'clamp(32px, 5vw, 48px)',
         maxWidth: 480, width: '100%',
         textAlign: 'center',
         position: 'relative',
         animation: 'slideUp 0.3s ease',
       }} onClick={e => e.stopPropagation()}>
-        <button onClick={onClose} style={{
-          position: 'absolute', top: 20, right: 20,
+        <button onClick={onClose} aria-label="Close modal" style={{
+          position: 'absolute', top: 16, right: 16,
           background: 'none', border: 'none', cursor: 'pointer',
           color: 'var(--muted)',
-          width: 32, height: 32, borderRadius: '50%',
+          width: 44, height: 44, borderRadius: '50%',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           transition: 'background 0.2s',
+          minWidth: '44px',
+          minHeight: '44px',
         }}
         onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'var(--sand)'}
         onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'none'}
@@ -84,11 +86,15 @@ export default function BookingModal({ isOpen, onClose }: Props) {
           background: 'var(--terracotta)',
           color: 'white',
           border: 'none',
-          padding: '14px 32px',
+          padding: '16px 32px',
           borderRadius: 6,
           fontSize: 15, fontWeight: 600,
           cursor: 'pointer',
           transition: 'background 0.3s',
+          minHeight: '48px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
         }}
         onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'var(--terracotta-dark)'}
         onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'var(--terracotta)'}

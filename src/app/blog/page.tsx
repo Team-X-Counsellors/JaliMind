@@ -4,6 +4,8 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Clock, ChevronRight, Search, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
+import { blogPostsData } from '@/data/blog';
 
 function Reveal({ children, delay = 0, style = {} }: { children: React.ReactNode; delay?: number; style?: React.CSSProperties }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -18,22 +20,12 @@ function Reveal({ children, delay = 0, style = {} }: { children: React.ReactNode
   );
 }
 
-const posts = [
-  { tag: 'Mental Health', title: 'Understanding Exam Anxiety and How to Manage It', excerpt: 'Exam season is one of the most mentally demanding periods for university students. Here is what the research says about exam anxiety and what actually works to manage it.', author: 'Dr. Amara Osei', date: 'January 2026', readTime: '5 min', featured: true, color: '#8B4A3C' },
-  { tag: 'Platform', title: 'How Anonymous Counselling is Transforming African Campuses', excerpt: 'Anonymity is not a loophole — it is a lifeline. We explore why anonymous access to counselling is changing who gets help across Nigerian, Kenyan, and Ghanaian universities.', author: 'JaliMind Team', date: 'February 2026', readTime: '7 min', featured: false, color: '#4A6741' },
-  { tag: 'Wellbeing', title: 'Building Emotional Resilience as a University Student', excerpt: 'Resilience is not the absence of struggle. It is the capacity to move through difficulty without losing yourself. Here are four evidence-based strategies to build it deliberately.', author: 'Mr. David Kamau', date: 'February 2026', readTime: '4 min', featured: false, color: '#C4956A' },
-  { tag: 'Culture', title: 'Talking to African Parents About Mental Health: A Practical Guide', excerpt: 'The conversation is hard. But it is possible. Based on real experiences shared by students in our community, here is how to begin a mental health conversation at home.', author: 'Ms. Fatima Al-Hassan', date: 'January 2026', readTime: '6 min', featured: false, color: '#7A5A3C' },
-  { tag: 'AI & Technology', title: 'What Our AI Chatbot Can and Cannot Do for Your Mental Health', excerpt: 'Artificial intelligence can play a meaningful supportive role in mental health — but it has real limits. We explain exactly what JaliMind\'s AI is designed to do and where it steps back.', author: 'JaliMind Team', date: 'December 2025', readTime: '8 min', featured: false, color: '#5A7A8A' },
-  { tag: 'Relationships', title: 'Navigating Romantic Relationships at University Without Losing Yourself', excerpt: 'University relationships can be wonderful and overwhelming in equal measure. Here is how to build connections that add to your life rather than consuming it.', author: 'Ms. Ama Asante', date: 'December 2025', readTime: '5 min', featured: false, color: '#6B4A8A' },
-  { tag: 'Academic Life', title: 'The Hidden Cost of People-Pleasing in Group Projects', excerpt: 'Always saying yes, never setting limits, doing others\' work to keep the peace — people-pleasing in academic settings has real mental health consequences. Let us talk about it.', author: 'Mr. David Kamau', date: 'November 2025', readTime: '4 min', featured: false, color: '#8B7355' },
-];
-
 const tags = ['All', 'Mental Health', 'Platform', 'Wellbeing', 'Culture', 'AI & Technology', 'Relationships', 'Academic Life'];
 
 export default function Blog() {
   const [search, setSearch] = useState('');
   const [activeTag, setActiveTag] = useState('All');
-  const [featured, ...rest] = posts;
+  const [featured, ...rest] = blogPostsData;
 
   const filtered = rest.filter(p =>
     (activeTag === 'All' || p.tag === activeTag) &&
@@ -62,10 +54,14 @@ export default function Blog() {
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
           <Reveal>
             <div style={{ background: 'white', borderRadius: 20, overflow: 'hidden', border: '1px solid var(--border)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
-              <div style={{ height: 320, background: `linear-gradient(135deg, ${featured.color}50, ${featured.color}90)`, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 280 }}>
-                <div style={{ textAlign: 'center', color: 'white', opacity: 0.4 }}>
-                  <div style={{ fontSize: 80 }}>&#9776;</div>
-                </div>
+              <div style={{ aspectRatio: '16/9', width:'100%', position: 'relative', minHeight: 280, overflow: 'hidden' }}>
+                <Image
+                  src={featured.image}
+                  alt={featured.title}
+                  fill
+                  style={{ objectFit: 'cover', objectPosition: 'center top' }}
+                  priority
+                />
               </div>
               <div style={{ padding: '48px 40px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                 <div style={{ display: 'flex', gap: 10, marginBottom: 16 }}>
@@ -123,8 +119,13 @@ export default function Blog() {
                 onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(-4px)'; el.style.boxShadow = '0 16px 40px rgba(0,0,0,0.08)'; }}
                 onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(0)'; el.style.boxShadow = 'none'; }}
                 >
-                  <div style={{ height: 160, background: `linear-gradient(135deg, ${post.color}30, ${post.color}70)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <span style={{ fontFamily: 'var(--font-display)', fontSize: 40, color: post.color, opacity: 0.4 }}>&#9776;</span>
+                  <div style={{ height: 270, background: `linear-gradient(135deg, ${post.color}30, ${post.color}70)`, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
+                    <Image
+                      src={post.image}
+                      alt={post.title}
+                      fill
+                      style={{ objectFit: 'cover', objectPosition: 'center' }}
+                    />
                   </div>
                   <div style={{ padding: '22px 22px 26px', display: 'flex', flexDirection: 'column', flex: 1 }}>
                     <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: 'var(--terracotta)', marginBottom: 10 }}>{post.tag}</span>

@@ -77,21 +77,22 @@ export default function Contact() {
               <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 28 }}>We typically respond within 24 hours on working days.</p>
 
               {/* ENQUIRY TYPE */}
-              <div style={{ display: 'flex', gap: 8, marginBottom: 28, padding: '6px', background: 'var(--cream)', borderRadius: 10 }}>
+              <div style={{ display: 'flex', gap: 10, marginBottom: 28, padding: '8px', background: 'var(--cream)', borderRadius: 10 }}>
                 {[
                   { key: 'student', label: 'Student', icon: Users },
                   { key: 'institution', label: 'Institution', icon: Building },
                   { key: 'media', label: 'Media', icon: MessageCircle },
                 ].map(({ key, label, icon: Icon }) => (
                   <button key={key} onClick={() => setFormType(key as any)} style={{
-                    flex: 1, padding: '10px 8px', borderRadius: 7, border: 'none',
+                    flex: 1, padding: '12px 10px', borderRadius: 7, border: 'none',
                     background: formType === key ? 'white' : 'transparent',
                     boxShadow: formType === key ? '0 2px 8px rgba(0,0,0,0.1)' : 'none',
                     color: formType === key ? 'var(--terracotta)' : 'var(--muted)',
                     fontWeight: 600, fontSize: 13, cursor: 'pointer', transition: 'all 0.25s',
                     fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                    minHeight: '44px',
                   }}>
-                    <Icon size={14} />{label}
+                    <Icon size={16} />{label}
                   </button>
                 ))}
               </div>
@@ -103,7 +104,7 @@ export default function Contact() {
                   </div>
                   <h4 style={{ fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 700, color: 'var(--charcoal)', marginBottom: 12 }}>Message Sent</h4>
                   <p style={{ fontSize: 15, color: 'var(--muted)', lineHeight: 1.75 }}>Thank you for reaching out. A member of our team will get back to you within 24 hours.</p>
-                  <button onClick={() => { setSubmitted(false); setForm({ name: '', email: '', university: '', message: '', subject: '' }); }} style={{ marginTop: 24, background: 'none', border: '1.5px solid var(--border)', color: 'var(--charcoal)', padding: '10px 20px', borderRadius: 6, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>Send Another Message</button>
+                  <button onClick={() => { setSubmitted(false); setForm({ name: '', email: '', university: '', message: '', subject: '' }); }} style={{ marginTop: 24, background: 'none', border: '1.5px solid var(--border)', color: 'var(--charcoal)', padding: '12px 24px', borderRadius: 6, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)', minHeight: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Send Another Message</button>
                 </div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
@@ -137,7 +138,7 @@ export default function Contact() {
                       onBlur={e => (e.currentTarget.style.borderColor = 'var(--border)')}
                     />
                   </div>
-                  <button onClick={handleSubmit} style={{ background: 'var(--terracotta)', color: 'white', border: 'none', padding: '15px', borderRadius: 8, fontSize: 15, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: 'var(--font-body)', transition: 'background 0.3s' }}
+                  <button onClick={handleSubmit} style={{ background: 'var(--terracotta)', color: 'white', border: 'none', padding: '16px 20px', borderRadius: 8, fontSize: 15, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: 'var(--font-body)', transition: 'background 0.3s', minHeight: '48px' }}
                   onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'var(--terracotta-dark)'}
                   onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'var(--terracotta)'}
                   ><Send size={16} /> Send Message</button>

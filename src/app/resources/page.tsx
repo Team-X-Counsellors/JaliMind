@@ -1,8 +1,10 @@
 'use client';
 import { useRef, useEffect, useState } from 'react';
+import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { Download, BookOpen, Play, FileText, Search, Clock, ExternalLink } from 'lucide-react';
+import { BookOpen, Download, Play, Search, Clock, ExternalLink } from 'lucide-react';
+import { resourcesData } from '@/data/resources';
 
 function Reveal({ children, delay = 0, style = {} }: { children: React.ReactNode; delay?: number; style?: React.CSSProperties }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -19,18 +21,6 @@ function Reveal({ children, delay = 0, style = {} }: { children: React.ReactNode
 
 const categories = ['All', 'Anxiety & Stress', 'Depression', 'Academic Performance', 'Relationships', 'Identity', 'Self-Care', 'Crisis Support'];
 
-const resources = [
-  { type: 'article', title: 'Understanding Anxiety: A Guide for African University Students', category: 'Anxiety & Stress', readTime: '8 min', desc: 'A comprehensive overview of anxiety in academic settings, including African-specific cultural factors that influence how anxiety presents and how it is discussed.', color: '#8B4A3C' },
-  { type: 'workbook', title: 'Exam Season Survival Workbook', category: 'Academic Performance', readTime: 'PDF · 24 pages', desc: 'Practical exercises, schedules, and self-check-ins to help you manage the emotional weight of examination periods without burning out.', color: '#4A6741' },
-  { type: 'video', title: 'Breathing Techniques for Immediate Anxiety Relief', category: 'Anxiety & Stress', readTime: '12 min video', desc: 'A guided video session demonstrating four evidence-based breathing techniques you can use anywhere — in a lecture hall, a bathroom, or before an exam.', color: '#C4956A' },
-  { type: 'article', title: 'When Sadness Becomes Depression: Knowing the Difference', category: 'Depression', readTime: '10 min', desc: 'An accessible, stigma-free explanation of how depression develops, what it feels like for students, and the first steps to take if you think you might be struggling.', color: '#7A5A3C' },
-  { type: 'workbook', title: 'The Identity Workbook: Navigating Culture, Family & Self', category: 'Identity', readTime: 'PDF · 18 pages', desc: 'Specifically designed for African students who feel torn between family expectations, cultural identity, and their own emerging sense of self at university.', color: '#5A7A8A' },
-  { type: 'article', title: 'Healthy Boundaries in Friendships and Romantic Relationships', category: 'Relationships', readTime: '6 min', desc: 'Practical guidance on recognising unhealthy relationship patterns and building the communication skills to set boundaries with care and confidence.', color: '#6B4A8A' },
-  { type: 'video', title: 'A Guided Meditation for Student Overwhelm', category: 'Self-Care', readTime: '18 min video', desc: 'A guided body-scan meditation designed for students who feel overwhelmed — especially effective before sleep or during particularly difficult academic periods.', color: '#4A6741' },
-  { type: 'article', title: 'Crisis Support: What to Do When You Are Not Okay', category: 'Crisis Support', readTime: '5 min', desc: 'A clear, calm guide covering exactly what to do and who to contact if you or a friend is experiencing a mental health crisis on campus.', color: '#D4403A' },
-  { type: 'workbook', title: 'Sleep Hygiene for Students: A 7-Day Reset Plan', category: 'Self-Care', readTime: 'PDF · 12 pages', desc: 'Poor sleep dramatically worsens anxiety and depression. This seven-day workbook walks you through building sustainable sleep habits while managing a full student schedule.', color: '#8B7355' },
-];
-
 const typeIcon = { article: BookOpen, workbook: Download, video: Play };
 const typeLabel = { article: 'Article', workbook: 'Workbook', video: 'Video' };
 const typeColor = { article: '#4A6741', workbook: '#8B4A3C', video: '#C4956A' };
@@ -39,7 +29,7 @@ export default function Resources() {
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
 
-  const filtered = resources.filter(r =>
+  const filtered = resourcesData.filter(r =>
     (activeCategory === 'All' || r.category === activeCategory) &&
     (search === '' || r.title.toLowerCase().includes(search.toLowerCase()) || r.category.toLowerCase().includes(search.toLowerCase()))
   );
@@ -93,8 +83,14 @@ export default function Resources() {
                   onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(-4px)'; el.style.boxShadow = '0 16px 40px rgba(0,0,0,0.09)'; }}
                   onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(0)'; el.style.boxShadow = 'none'; }}
                   >
-                    <div style={{ height: 120, background: `linear-gradient(135deg, ${r.color}30, ${r.color}70)`, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-                      <Icon size={40} style={{ color: r.color, opacity: 0.7 }} />
+                    <div style={{ position: 'relative', height: 180, width: '100%', overflow: 'hidden' }}>
+                      {r.image ? (
+                        <Image src={r.image} alt={r.title} fill style={{ objectFit: 'cover', objectPosition: 'center' }} />
+                      ) : (
+                        <div style={{ height: '100%', background: `linear-gradient(135deg, ${r.color}30, ${r.color}70)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <Icon size={40} style={{ color: r.color, opacity: 0.7 }} />
+                        </div>
+                      )}
                       <div style={{ position: 'absolute', top: 12, left: 12, background: typeColor[r.type as keyof typeof typeColor], color: 'white', fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', padding: '3px 10px', borderRadius: 12 }}>
                         {typeLabel[r.type as keyof typeof typeLabel]}
                       </div>

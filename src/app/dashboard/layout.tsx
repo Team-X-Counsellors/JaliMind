@@ -14,6 +14,7 @@ const navItems = [
   { href: '/dashboard/appointments', label: 'Appointments', icon: '◷' },
   { href: '/dashboard/library', label: 'Library', icon: '⊟' },
   { href: '/dashboard/circle', label: 'Circle', icon: '◈' },
+  { href: '/dashboard/memories', label: 'Memories', icon: '◆' },
   { href: '/dashboard/counselors', label: 'Counselors', icon: '✜' },
 ];
 

@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import api from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -117,21 +118,23 @@ export default function CirclePage() {
 
       <div className="space-y-3">
         {threads.map((t) => (
-          <Card key={t.id} className="hover:shadow-sm transition-shadow cursor-pointer">
-            <CardHeader className="pb-2">
-              <div className="flex items-start justify-between gap-2">
-                <CardTitle className="text-base leading-snug">{t.title}</CardTitle>
-                <Badge variant="secondary" className="text-xs shrink-0">{t.reply_count} replies</Badge>
-              </div>
-              <CardDescription className="text-xs">
-                {t.category_name && <span className="text-primary mr-2">{t.category_name}</span>}
-                by {t.author_display}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground line-clamp-2">{t.body}</p>
-            </CardContent>
-          </Card>
+          <Link key={t.id} href={`/dashboard/circle/${t.id}`}>
+            <Card className="hover:shadow-sm transition-shadow cursor-pointer">
+              <CardHeader className="pb-2">
+                <div className="flex items-start justify-between gap-2">
+                  <CardTitle className="text-base leading-snug">{t.title}</CardTitle>
+                  <Badge variant="secondary" className="text-xs shrink-0">{t.reply_count} replies</Badge>
+                </div>
+                <CardDescription className="text-xs">
+                  {t.category_name && <span className="text-primary mr-2">{t.category_name}</span>}
+                  by {t.author_display}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground line-clamp-2">{t.body}</p>
+              </CardContent>
+            </Card>
+          </Link>
         ))}
         {!loading && threads.length === 0 && (
           <p className="text-muted-foreground text-sm">No discussions yet. Start the first one!</p>

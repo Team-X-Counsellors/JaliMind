@@ -1,168 +1,89 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+
+const links = [
+  { href: '/services', label: 'Services' },
+  { href: '/counsellors', label: 'Counsellors' },
+  { href: '/community', label: 'Community' },
+  { href: '/resources', label: 'Resources' },
+  { href: '/about', label: 'About' },
+];
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  // The drawer is "open" only for the page it was opened on, so navigating closes it
+  // without needing an effect to reset state.
+  const [openedOn, setOpenedOn] = useState<string | null>(null);
+  const open = openedOn === pathname;
 
+  // Stop the page scrolling behind the open drawer.
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
-  const links = [
-    { href: '/about', label: 'About' },
-    { href: '/services', label: 'Services' },
-    { href: '/counsellors', label: 'Counsellors' },
-    { href: '/community', label: 'Community' },
-    { href: '/resources', label: 'Resources' },
-    { href: '/case-studies', label: 'Case Studies' },
-  ];
+    document.body.style.overflow = open ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [open]);
 
   return (
-    <>
-      <nav style={{
-        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
-        background: scrolled ? 'rgba(253,250,246,0.97)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(12px)' : 'none',
-        borderBottom: scrolled ? '1px solid var(--border)' : 'none',
-        transition: 'all 0.4s ease',
-        padding: '0 5%',
-      }}>
-        <div style={{
-          maxWidth: 1200, margin: '0 auto',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          height: 72,
-        }}>
-          <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{
-              width: 38, height: 38, borderRadius: '50%',
-              background: 'var(--terracotta)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="white" opacity="0.3"/>
-                <path d="M12 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 10c-2.7 0-5.8 1.29-6 2h12c-.2-.71-3.3-2-6-2z" fill="white"/>
-              </svg>
-            </div>
-            <span style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 22, fontWeight: 700,
-              color: scrolled ? 'var(--terracotta-dark)' : 'white',
-              letterSpacing: '-0.3px',
-              transition: 'color 0.4s',
-            }}>JaliMind</span>
-          </Link>
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-night text-white">
+      <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-3 focus:top-3 focus:z-50 focus:rounded-full focus:bg-marigold focus:px-4 focus:py-2 focus:text-night">
+        Skip to content
+      </a>
+      <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5" aria-label="Main">
+        <Link href="/" className="tap flex items-center font-display text-xl font-bold tracking-tight">
+          Jali<span className="text-marigold">Mind</span>
+        </Link>
 
-          <div style={{ display: 'flex', gap: 32, alignItems: 'center' }} className="nav-links">
-            {links.map(l => (
-              <Link key={l.href} href={l.href} style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: 14, fontWeight: 500,
-                color: scrolled ? 'var(--charcoal)' : 'rgba(255,255,255,0.9)',
-                transition: 'color 0.3s',
-                letterSpacing: '0.2px',
-              }}
-              onMouseEnter={e => (e.currentTarget.style.color = 'var(--terracotta)')}
-              onMouseLeave={e => (e.currentTarget.style.color = scrolled ? 'var(--charcoal)' : 'rgba(255,255,255,0.9)')}
-              >{l.label}</Link>
-            ))}
-            <Link href="/auth/login" style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: 14, fontWeight: 500,
-              color: scrolled ? 'var(--charcoal)' : 'rgba(255,255,255,0.9)',
-              transition: 'color 0.3s',
-            }}
-            onMouseEnter={e => (e.currentTarget.style.color = 'var(--terracotta)')}
-            onMouseLeave={e => (e.currentTarget.style.color = scrolled ? 'var(--charcoal)' : 'rgba(255,255,255,0.9)')}
-            >Sign In</Link>
-            <Link href="/auth/register" style={{
-              background: 'var(--terracotta)',
-              color: 'white',
-              padding: '12px 28px',
-              borderRadius: 4,
-              fontSize: 14, fontWeight: 600,
-              transition: 'background 0.3s, transform 0.2s',
-              minHeight: '44px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--terracotta-dark)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--terracotta)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}
-            >Get Started</Link>
-          </div>
+        <div className="hidden items-center gap-7 md:flex">
+          {links.map((l) => (
+            <Link key={l.href} href={l.href}
+              className={`text-[15px] font-medium transition-colors hover:text-marigold ${pathname === l.href ? 'text-marigold' : 'text-white/85'}`}>
+              {l.label}
+            </Link>
+          ))}
+          <Link href="/auth/login" className="text-[15px] font-medium text-white/85 transition-colors hover:text-marigold">Sign in</Link>
+          <Button asChild variant="cta" size="sm"><Link href="/talk">Talk now</Link></Button>
+        </div>
 
+        <div className="flex items-center gap-1 md:hidden">
+          <Button asChild variant="cta" size="sm"><Link href="/talk">Talk now</Link></Button>
           <button
-            onClick={() => setOpen(!open)}
-            style={{
-              background: 'none', border: 'none', cursor: 'pointer',
-              color: scrolled ? 'var(--charcoal)' : 'white',
-              padding: '8px',
-              minWidth: '44px',
-              minHeight: '44px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-            className="hamburger"
-            aria-label="Toggle navigation menu"
+            onClick={() => setOpenedOn(open ? null : pathname)}
+            className="tap flex items-center justify-center rounded-full"
+            aria-label={open ? 'Close menu' : 'Open menu'}
             aria-expanded={open}
+            aria-controls="mobile-menu"
           >
-            {open ? <X size={24} /> : <Menu size={24} />}
+            {open ? <X size={26} /> : <Menu size={26} />}
           </button>
         </div>
       </nav>
 
-      {/* Mobile menu */}
-      <div style={{
-        position: 'fixed', top: 72, left: 0, right: 0, zIndex: 99,
-        background: 'var(--warm-white)',
-        borderBottom: '1px solid var(--border)',
-        transform: open ? 'translateY(0)' : 'translateY(-120%)',
-        transition: 'transform 0.35s ease',
-        padding: '20px 5%',
-      }} className="mobile-menu">
-        {links.map(l => (
-          <Link key={l.href} href={l.href}
-            onClick={() => setOpen(false)}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              padding: '16px 0',
-              borderBottom: '1px solid var(--border)',
-              fontSize: 15, fontWeight: 500, color: 'var(--charcoal)',
-              minHeight: '44px',
-            }}>
-            {l.label}
-          </Link>
-        ))}
-        <Link href="/auth/login" onClick={() => setOpen(false)} style={{
-          display: 'block', marginTop: 16,
-          padding: '12px 0', borderBottom: '1px solid var(--border)',
-          fontSize: 15, fontWeight: 500, color: 'var(--charcoal)',
-        }}>Sign In</Link>
-        <Link href="/auth/register" onClick={() => setOpen(false)} style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          marginTop: 16,
-          background: 'var(--terracotta)', color: 'white',
-          padding: '16px 28px', borderRadius: 4,
-          fontSize: 14, fontWeight: 600,
-          minHeight: '48px',
-        }}>Get Started — It&apos;s Free</Link>
-      </div>
-
-      <style>{`
-        @media (max-width: 768px) {
-          .nav-links { display: none !important; }
-          .hamburger { display: flex !important; }
-        }
-        @media (max-width: 480px) {
-          .hamburger { min-width: 48px; min-height: 48px; }
-        }
-      `}</style>
-    </>
+      {open && (
+        <div id="mobile-menu" className="fixed inset-x-0 bottom-0 top-16 z-40 flex flex-col overflow-y-auto bg-night px-5 pb-safe md:hidden">
+          <ul className="mt-2">
+            {links.map((l) => (
+              <li key={l.href}>
+                <Link href={l.href} className="flex min-h-[60px] items-center border-b border-white/10 font-display text-2xl font-semibold">
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+            <li>
+              <Link href="/contact" className="flex min-h-[60px] items-center border-b border-white/10 font-display text-2xl font-semibold">Contact</Link>
+            </li>
+          </ul>
+          <div className="mt-auto space-y-3 py-6">
+            <Button asChild variant="cta" size="lg" className="w-full"><Link href="/talk">Talk to someone now</Link></Button>
+            <Button asChild size="lg" variant="outline" className="w-full border-white/30 bg-transparent text-white hover:border-white hover:text-white">
+              <Link href="/auth/register">Create free account</Link>
+            </Button>
+            <Link href="/auth/login" className="flex min-h-[48px] items-center justify-center text-base font-semibold text-white/85">Sign in</Link>
+          </div>
+        </div>
+      )}
+    </header>
   );
 }

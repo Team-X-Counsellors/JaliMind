@@ -1,82 +1,46 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { Trash2 } from 'lucide-react';
 import api from '@/lib/api';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { fmtDate } from '@/lib/format';
+import { Empty, PageHeader, Spinner } from '@/components/student/ui';
 
-interface Memory {
-  id: string;
-  content: string;
-  category: string;
-  created_at: string;
-}
+interface Memory { id: string; content: string; category: string; created_at: string }
 
-const CATEGORY_LABEL: Record<string, string> = {
-  academic: 'Academic',
-  emotional: 'Emotional',
-  family: 'Family',
-  career: 'Career',
-  other: 'Other',
-};
+const CATEGORY: Record<string, string> = { academic: 'School', emotional: 'Feelings', family: 'Family', career: 'Career', other: 'Other' };
 
 export default function MemoriesPage() {
-  const [memories, setMemories] = useState<Memory[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [memories, setMemories] = useState<Memory[] | null>(null);
 
   useEffect(() => {
-    api.get('/api/jalibot/memories/')
-      .then(({ data }) => setMemories(data))
-      .finally(() => setLoading(false));
+    api.get('/api/jalibot/memories/').then(({ data }) => setMemories(data)).catch(() => setMemories([]));
   }, []);
 
   const remove = async (id: string) => {
-    setMemories((m) => m.filter((mem) => mem.id !== id));
-    try {
-      await api.delete(`/api/jalibot/memories/${id}/`);
-    } catch {
-      // if deletion failed, refetch to restore accurate state
-      const { data } = await api.get('/api/jalibot/memories/');
-      setMemories(data);
-    }
+    setMemories((m) => (m ?? []).filter((x) => x.id !== id));
+    try { await api.delete(`/api/jalibot/memories/${id}/`); }
+    catch { const { data } = await api.get('/api/jalibot/memories/'); setMemories(data); }
   };
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div>
-        <h2 className="text-2xl font-bold font-display">Memories</h2>
-        <p className="text-muted-foreground text-sm mt-1">
-          JaliBot quietly remembers a few things you&apos;ve shared to make future conversations more
-          relevant. You&apos;re always in control — delete anything below.
-        </p>
-      </div>
-
-      {loading && <p className="text-muted-foreground text-sm">Loading memories…</p>}
-
-      {!loading && memories.length === 0 && (
-        <p className="text-muted-foreground text-sm">JaliBot hasn&apos;t remembered anything about you yet.</p>
-      )}
-
-      <div className="space-y-3">
-        {memories.map((mem) => (
-          <Card key={mem.id}>
-            <CardContent className="pt-4 flex items-start justify-between gap-3">
-              <div>
-                <Badge variant="secondary" className="text-xs mb-2">
-                  {CATEGORY_LABEL[mem.category] || mem.category}
-                </Badge>
-                <p className="text-sm">{mem.content}</p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {new Date(mem.created_at).toLocaleDateString()}
-                </p>
-              </div>
-              <Button variant="ghost" size="sm" onClick={() => remove(mem.id)}>
-                Delete
-              </Button>
-            </CardContent>
-          </Card>
+    <div>
+      <PageHeader title="Memories" subtitle="A few things JaliBot remembers so you don't have to repeat yourself. Delete any of them." back="/dashboard/more" />
+      {memories === null && <Spinner />}
+      {memories && memories.length === 0 && <Empty title="Nothing remembered yet" body="JaliBot saves a few key facts as you chat." />}
+      <ul className="space-y-3">
+        {(memories ?? []).map((m) => (
+          <li key={m.id} className="flex items-start justify-between gap-3 rounded-2xl bg-card p-4 shadow-soft ring-1 ring-border">
+            <div className="min-w-0">
+              <span className="rounded-full bg-secondary px-2.5 py-0.5 text-xs font-semibold text-secondary-foreground">{CATEGORY[m.category] ?? m.category}</span>
+              <p className="mt-2">{m.content}</p>
+              <p className="mt-1 text-xs text-muted-foreground">{fmtDate(m.created_at)}</p>
+            </div>
+            <button onClick={() => remove(m.id)} className="tap grid shrink-0 place-items-center rounded-full text-muted-foreground hover:bg-hibiscus/10 hover:text-hibiscus" aria-label="Delete this memory">
+              <Trash2 size={18} aria-hidden />
+            </button>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 }

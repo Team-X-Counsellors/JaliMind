@@ -5,19 +5,23 @@ export interface FAQ {
 
 export const faqsData: FAQ[] = [
   {
-    q: 'Is my information kept private?',
-    a: 'Absolutely. JaliMind is built with privacy at its core. You can choose to engage fully anonymously. No personal data is shared with your institution or any third party.',
+    q: 'Is it really private?',
+    a: 'Anonymous chat needs no account, and you can wipe the chat at any time. We never share your chats with your university.',
   },
   {
-    q: 'Is JaliMind a replacement for campus counsellors?',
-    a: 'No — JaliMind is designed to support and extend the reach of existing counselling departments, not replace them. We partner directly with universities.',
+    q: 'Who replies in anonymous chat?',
+    a: 'A real counsellor, not a bot. If you write about harming yourself, your chat moves to the front of the queue.',
   },
   {
-    q: 'What languages does the AI support?',
-    a: 'Currently English and Swahili, with Igbo, Hausa, Twi, and French planned in our next release phase.',
+    q: 'Does it replace my campus counsellor?',
+    a: 'No. JaliMind adds to campus support. We can point you to the right office on your campus.',
   },
   {
-    q: 'Is JaliMind free for students?',
-    a: 'Access to core features is free for students at partner institutions. Premium features may be available through your university subscription.',
+    q: 'Which languages work?',
+    a: 'JaliBot replies in the language you write: English, Swahili, French, Hausa, Igbo or Twi. Counsellor profiles list the languages they speak.',
+  },
+  {
+    q: 'Is it free?',
+    a: 'Yes, for students. No card needed.',
   },
 ];

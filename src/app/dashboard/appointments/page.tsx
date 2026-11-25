@@ -1,92 +1,154 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
+import { MessageSquare, Mic, Star, Video } from 'lucide-react';
 import api from '@/lib/api';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { fmtDate, fmtTime } from '@/lib/format';
+import { Button } from '@/components/ui/button';
+import { Chip, Empty, PageHeader, Spinner, StatusChip } from '@/components/student/ui';
 
-interface Appointment {
-  id: string;
-  counselor_name: string;
-  scheduled_at: string;
-  status: string;
-  session_type: string;
-  duration_minutes: number;
-  meeting_link?: string;
+interface Appt {
+  id: string; counselor_name: string | null; scheduled_at: string; duration_minutes: number;
+  status: string; session_type: string; meeting_link: string;
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  pending: 'bg-muted text-muted-foreground',
-  confirmed: 'bg-accent/20 text-accent-foreground',
-  in_progress: 'bg-primary/20 text-primary',
-  completed: 'bg-secondary text-secondary-foreground',
-  cancelled: 'bg-destructive/20 text-destructive',
-  no_show: 'bg-destructive/10 text-destructive/70',
-};
+const ICON = { video: Video, voice: Mic, text: MessageSquare, anonymous: MessageSquare } as const;
+const EARLY_MS = 10 * 60e3;
 
-export default function AppointmentsPage() {
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    api.get('/api/appointments/')
-      .then(({ data }) => setAppointments(data.results ?? data))
-      .finally(() => setLoading(false));
-  }, []);
-
-  const upcoming = appointments.filter((a) => ['pending', 'confirmed'].includes(a.status));
-  const past = appointments.filter((a) => !['pending', 'confirmed'].includes(a.status));
-
-  const fmtDate = (d: string) =>
-    new Date(d).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-
-  const AppointmentCard = ({ a }: { a: Appointment }) => (
-    <Card>
-      <CardHeader className="pb-2">
-        <div className="flex items-start justify-between gap-2">
-          <CardTitle className="text-base">{a.counselor_name || 'Counselor'}</CardTitle>
-          <Badge className={`text-xs capitalize ${STATUS_COLORS[a.status] ?? ''}`}>{a.status.replace('_', ' ')}</Badge>
-        </div>
-        <CardDescription>{fmtDate(a.scheduled_at)}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <p className="text-sm text-muted-foreground capitalize">
-          {a.session_type} · {a.duration_minutes} min
-        </p>
-        {a.meeting_link && a.status === 'confirmed' && (
-          <a href={a.meeting_link} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline mt-2 block">
-            Join session →
-          </a>
-        )}
-      </CardContent>
-    </Card>
+function Review({ id, onDone }: { id: string; onDone: () => void }) {
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
+  const submit = async () => {
+    setBusy(true); setErr('');
+    try { await api.post(`/api/appointments/${id}/review/`, { rating, comment }); onDone(); }
+    catch { setErr('Could not save your review. You may have already reviewed this session.'); }
+    finally { setBusy(false); }
+  };
+  return (
+    <div className="mt-3 rounded-xl bg-secondary p-3">
+      <p className="text-sm font-semibold">How was it?</p>
+      <div className="mt-1 flex gap-1" role="radiogroup" aria-label="Rating">
+        {[1, 2, 3, 4, 5].map((n) => (
+          <button key={n} role="radio" aria-checked={rating === n} aria-label={`${n} star${n > 1 ? 's' : ''}`} onClick={() => setRating(n)} className="tap grid place-items-center">
+            <Star size={26} className={n <= rating ? 'fill-marigold text-marigold' : 'text-muted-foreground'} aria-hidden />
+          </button>
+        ))}
+      </div>
+      <textarea value={comment} onChange={(e) => setComment(e.target.value)} rows={2} placeholder="Anything to add? (optional)" aria-label="Comment"
+        className="mt-2 w-full resize-none rounded-xl border-2 border-input bg-card px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" />
+      {err && <p role="alert" className="mt-1 text-sm text-destructive">{err}</p>}
+      <Button size="sm" className="mt-2" disabled={!rating || busy} onClick={submit}>{busy ? 'Saving…' : 'Send review'}</Button>
+    </div>
   );
+}
+
+function Card({ a, reload }: { a: Appt; reload: () => void }) {
+  const [confirmCancel, setConfirmCancel] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [reviewing, setReviewing] = useState(false);
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => { const t = setInterval(() => setNow(Date.now()), 30000); return () => clearInterval(t); }, []);
+
+  const start = new Date(a.scheduled_at).getTime();
+  const end = start + a.duration_minutes * 60e3;
+  const isCall = a.session_type === 'video' || a.session_type === 'voice';
+  const live = ['confirmed', 'in_progress'].includes(a.status);
+  const canJoin = live && isCall && now >= start - EARLY_MS && now <= end + 30 * 60e3;
+  const Icon = ICON[a.session_type as keyof typeof ICON] ?? MessageSquare;
+  const d = new Date(a.scheduled_at);
+
+  const cancel = async () => {
+    setBusy(true);
+    try { await api.patch(`/api/appointments/${a.id}/`, { status: 'cancelled' }); reload(); }
+    finally { setBusy(false); setConfirmCancel(false); }
+  };
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div>
-        <h2 className="text-2xl font-bold font-display">Appointments</h2>
-        <p className="text-muted-foreground text-sm">Your upcoming and past counseling sessions</p>
+    <li className="rounded-2xl bg-card p-4 shadow-soft ring-1 ring-border">
+      <div className="flex gap-4">
+        <div className="grid h-16 w-16 shrink-0 place-content-center rounded-2xl bg-secondary text-center text-primary">
+          <span className="text-xs font-semibold">{d.toLocaleDateString(undefined, { month: 'short' })}</span>
+          <span className="font-display text-2xl font-bold leading-none">{d.getDate()}</span>
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-start justify-between gap-2">
+            <h2 className="truncate font-display font-semibold">{a.counselor_name ?? 'Counsellor'}</h2>
+            <StatusChip status={a.status} />
+          </div>
+          <p className="mt-0.5 flex items-center gap-1.5 text-sm text-muted-foreground">
+            <Icon size={14} aria-hidden /> {fmtDate(a.scheduled_at)}, {fmtTime(a.scheduled_at)} · {a.duration_minutes} min
+          </p>
+        </div>
       </div>
 
-      {loading && <p className="text-muted-foreground text-sm">Loading appointments…</p>}
-
-      {!loading && (
-        <>
-          <section className="space-y-3">
-            <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Upcoming</h3>
-            {upcoming.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No upcoming appointments. <a href="/dashboard/counselors" className="text-primary hover:underline">Book one now</a>.</p>
-            ) : upcoming.map((a) => <AppointmentCard key={a.id} a={a} />)}
-          </section>
-
-          {past.length > 0 && (
-            <section className="space-y-3">
-              <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Past</h3>
-              {past.map((a) => <AppointmentCard key={a.id} a={a} />)}
-            </section>
-          )}
-        </>
+      {live && isCall && (
+        canJoin ? (
+          <Button asChild variant="cta" size="lg" className="mt-4 w-full"><Link href={`/call/${a.id}`}><Icon size={18} aria-hidden /> Join call</Link></Button>
+        ) : now < start - EARLY_MS ? (
+          <p className="mt-3 rounded-xl bg-secondary px-3 py-2 text-sm text-muted-foreground">Join opens 10 minutes before your session.</p>
+        ) : null
       )}
+      {live && !isCall && <p className="mt-3 rounded-xl bg-secondary px-3 py-2 text-sm text-muted-foreground">Your counsellor will message you.</p>}
+      {a.status === 'pending' && <p className="mt-3 text-sm text-muted-foreground">Waiting for your counsellor to confirm.</p>}
+
+      {a.status === 'completed' && !reviewing && (
+        <Button variant="soft" size="sm" className="mt-3" onClick={() => setReviewing(true)}>Leave a review</Button>
+      )}
+      {a.status === 'completed' && reviewing && <Review id={a.id} onDone={() => { setReviewing(false); reload(); }} />}
+
+      {['pending', 'confirmed'].includes(a.status) && now < start && (
+        <div className="mt-3">
+          {confirmCancel ? (
+            <div className="flex items-center gap-2">
+              <Button size="sm" variant="destructive" disabled={busy} onClick={cancel}>{busy ? 'Cancelling…' : 'Yes, cancel'}</Button>
+              <Button size="sm" variant="ghost" onClick={() => setConfirmCancel(false)}>Keep it</Button>
+            </div>
+          ) : (
+            <button onClick={() => setConfirmCancel(true)} className="tap text-sm font-semibold text-muted-foreground underline">Cancel session</button>
+          )}
+        </div>
+      )}
+    </li>
+  );
+}
+
+export default function AppointmentsPage() {
+  const [list, setList] = useState<Appt[] | null>(null);
+  const [tab, setTab] = useState<'upcoming' | 'past'>('upcoming');
+
+  const load = useCallback(() => {
+    api.get('/api/appointments/').then(({ data }) => setList(data.results ?? data)).catch(() => setList([]));
+  }, []);
+  useEffect(() => { load(); }, [load]);
+
+  const { upcoming, past } = useMemo(() => {
+    const up: Appt[] = [], pa: Appt[] = [];
+    (list ?? []).forEach((a) => (['pending', 'confirmed', 'in_progress'].includes(a.status) ? up : pa).push(a));
+    up.sort((a, b) => +new Date(a.scheduled_at) - +new Date(b.scheduled_at));
+    pa.sort((a, b) => +new Date(b.scheduled_at) - +new Date(a.scheduled_at));
+    return { upcoming: up, past: pa };
+  }, [list]);
+
+  const shown = tab === 'upcoming' ? upcoming : past;
+
+  return (
+    <div>
+      <PageHeader title="Sessions" action={<Button asChild size="sm" variant="cta"><Link href="/dashboard/counselors">Book</Link></Button>} />
+      <div className="mb-4 flex gap-2">
+        <Chip active={tab === 'upcoming'} onClick={() => setTab('upcoming')}>Upcoming{upcoming.length ? ` (${upcoming.length})` : ''}</Chip>
+        <Chip active={tab === 'past'} onClick={() => setTab('past')}>Past</Chip>
+      </div>
+      {list === null && <Spinner />}
+      {list && shown.length === 0 && (
+        <Empty
+          title={tab === 'upcoming' ? 'No sessions booked' : 'Nothing here yet'}
+          body={tab === 'upcoming' ? 'Book a time with a counsellor whenever you are ready.' : undefined}
+          action={tab === 'upcoming' ? <Button asChild><Link href="/dashboard/counselors">Find a counsellor</Link></Button> : undefined}
+        />
+      )}
+      <ul className="space-y-3">{shown.map((a) => <Card key={a.id} a={a} reload={load} />)}</ul>
     </div>
   );
 }

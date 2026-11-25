@@ -27,7 +27,7 @@ export const heroAssets: HeroAsset[] = [
   {
     id: 'about-map',
     src: '/images/about/PanAfricanMap.jpg',
-    alt: 'Pan-Africa map showing JaliMind presence in Nigeria, Kenya, and Ghana',
+    alt: 'Map of Africa. Our team is based in Nigeria, Kenya and Ghana.',
     section: 'aboutStory',
   },
 ];

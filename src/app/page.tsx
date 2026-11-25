@@ -1,495 +1,239 @@
-'use client';
-import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import BookingModal from '@/components/BookingModal';
-import {
-  ArrowRight, CheckCircle, Users, MessageCircle, Shield,
-  BookOpen, Star, ChevronDown, Award, Heart, Globe,
-  Brain, Headphones, FileText, ChevronRight, Quote
-} from 'lucide-react';
-import { servicesData } from '@/data/services';
+import { Check, ChevronDown, MessageCircle, Video, Bot, Building2, BookOpen, Users } from 'lucide-react';
+import MarketingPage from '@/components/marketing/MarketingPage';
+import CrisisLines from '@/components/marketing/CrisisLines';
+import WhatsAppLink from '@/components/marketing/WhatsAppLink';
+import { Button } from '@/components/ui/button';
 import { counsellorsData } from '@/data/counsellors';
-import { testimonialsData } from '@/data/testimonials';
-import { getHeroAsset } from '@/data/heroAssets';
 import { faqsData } from '@/data/faqs';
-import { caseStudiesData } from '@/data/caseStudies';
-import { blogPostsData } from '@/data/blog';
+import { getHeroAsset } from '@/data/heroAssets';
+import styles from './page.module.css';
 
-function useScrollReveal() {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVisible(true); }, { threshold: 0.1 });
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, []);
-  return { ref, visible };
-}
+const checkIns = [
+  { name: 'Mood', tool: 'PHQ-9', q: '9 questions' },
+  { name: 'Anxiety', tool: 'GAD-7', q: '7 questions' },
+  { name: 'Wellbeing', tool: 'WHO-5', q: '5 questions' },
+];
 
-function Reveal({ children, delay = 0, style = {} }: { children: React.ReactNode; delay?: number; style?: React.CSSProperties }) {
-  const { ref, visible } = useScrollReveal();
-  return (
-    <div ref={ref} style={{
-      opacity: visible ? 1 : 0,
-      transform: visible ? 'translateY(0)' : 'translateY(28px)',
-      transition: `opacity 0.65s ease ${delay}ms, transform 0.65s ease ${delay}ms`,
-      ...style,
-    }}>{children}</div>
-  );
-}
+const alsoInside = [
+  { icon: Building2, title: 'Campus referrals', text: 'Find your guidance office, advisor or clinic and ask in one tap.' },
+  { icon: BookOpen, title: 'Resource library', text: 'Short reads on stress, sleep and anxiety.' },
+  { icon: Users, title: 'Jali Circle', text: 'Peer support from other students.' },
+];
 
 export default function Home() {
-  const [bookingOpen, setBookingOpen] = useState(false);
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
-
-  // Format services for homepage display
-  const homepageServices = servicesData.slice(0, 6).map(service => ({
-    icon: service.icon,
-    title: service.title,
-    desc: service.desc,
-    href: `/services#${service.id}`,
-  }));
-
-  // Get first 4 counsellors for homepage
-  const featuredCounsellors = counsellorsData.slice(0, 4);
+  const team = counsellorsData.slice(0, 4);
+  const why = getHeroAsset('hero-counselling');
 
   return (
-    <>
-      <Navbar />
-      <BookingModal isOpen={bookingOpen} onClose={() => setBookingOpen(false)} />
-
-      {/* HERO */}
-      <section style={{
-        minHeight: '100vh',
-        background: 'linear-gradient(135deg, #2C1810 0%, #4A2820 35%, #6B3228 70%, #8B4A3C 100%)',
-        position: 'relative', overflow: 'hidden',
-        display: 'flex', alignItems: 'center',
-      }}>
-        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(139,74,60,0.3) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(74,103,65,0.2) 0%, transparent 60%)' }} />
-        <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '55%', overflow: 'hidden' }} className="hero-image-container">
-          <Image
-            src={getHeroAsset('hero-students')?.src || ''}
-            alt={getHeroAsset('hero-students')?.alt || 'University students on campus'}
-            fill
-            style={{ objectFit: 'cover', objectPosition: 'center right', width: '100%', height: '100%' }}
-            priority
-            quality={100}
-          />
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, #2C1810 0%, transparent 70%)' }} />
-        </div>
-        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '120px 5% 80px', position: 'relative', zIndex: 2, width: '100%' }}>
-          <div style={{ maxWidth: 580 }}>
-            <div >
-              <div />
-
-            </div>
-            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(42px, 5.5vw, 68px)', fontWeight: 800, color: 'white', lineHeight: 1.15, marginBottom: 24, animation: 'fadeInUp 0.9s ease 0.1s both' }}>
-              Your Mind Matters.<br /><span style={{ color: '#C4956A' }}>Healing Starts</span><br />Here.
+    <MarketingPage>
+      {/* HERO: the action first, then proof of what it feels like */}
+      <section className="overflow-hidden bg-night text-white">
+        <div className="mx-auto grid max-w-6xl gap-10 px-5 pb-14 pt-9 md:grid-cols-[1.1fr_0.9fr] md:items-center md:gap-14 md:pb-24 md:pt-16">
+          <div>
+            <h1 className="text-balance font-display text-[2.7rem] font-bold leading-[1.05] md:text-6xl">
+              Talk to someone who gets it.
             </h1>
-            <p style={{ fontSize: 17, color: 'rgba(255,255,255,0.75)', lineHeight: 1.85, marginBottom: 36, animation: 'fadeInUp 0.9s ease 0.25s both', maxWidth: 480 }}>
-              Confidential guidance and counselling designed for university students across Africa. Talk, learn, or find community — JaliMind is built for you.
+            <p className="mt-4 max-w-md text-lg text-white/75">
+              Free, private support for African university students. No account needed.
             </p>
-            <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', animation: 'fadeInUp 0.9s ease 0.4s both' }}>
-              <Link href="/auth/register" style={{ background: 'white', color: 'var(--terracotta-dark)', padding: '15px 32px', borderRadius: 6, fontSize: 15, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 8, transition: 'all 0.3s' }}
-              onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(-2px)'; el.style.boxShadow = '0 12px 32px rgba(0,0,0,0.3)'; }}
-              onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(0)'; el.style.boxShadow = 'none'; }}
-              >Get Started — It&apos;s Free <ArrowRight size={16} /></Link>
-              <Link href="/auth/login" style={{ background: 'transparent', border: '2px solid rgba(255,255,255,0.4)', color: 'white', padding: '15px 32px', borderRadius: 6, fontSize: 15, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 8, transition: 'all 0.3s' }}
-              onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'white'; el.style.background = 'rgba(255,255,255,0.1)'; }}
-              onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'rgba(255,255,255,0.4)'; el.style.background = 'transparent'; }}
-              >Sign In</Link>
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <Button asChild variant="cta" size="lg"><Link href="/talk">Talk to someone now</Link></Button>
+              <Button asChild size="lg" variant="outline" className="border-white/30 bg-transparent text-white hover:border-white hover:text-white">
+                <Link href="/auth/register">Book a counsellor</Link>
+              </Button>
             </div>
-            <div style={{ display: 'flex', gap: 32, marginTop: 48, animation: 'fadeInUp 0.9s ease 0.55s both', flexWrap: 'wrap' }}>
-              {[{ val: '100%', label: 'Confidential' }, { val: 'Free', label: 'For Students' }, { val: '4+', label: 'Languages' }].map((s, i) => (
-                <div key={i} style={{ borderLeft: '2px solid rgba(255,255,255,0.25)', paddingLeft: 16 }}>
-                  <div style={{ fontSize: 22, fontWeight: 800, color: '#C4956A', fontFamily: 'var(--font-display)' }}>{s.val}</div>
-                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', letterSpacing: 0.5 }}>{s.label}</div>
-                </div>
-              ))}
-            </div>
+            <p className="mt-4 text-sm text-white/60">Anonymous. A real counsellor replies.</p>
           </div>
-        </div>
-        <div style={{ position: 'absolute', bottom: 32, left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, color: 'rgba(255,255,255,0.4)', animation: 'bounce 2s infinite' }}>
-          <span style={{ fontSize: 11, letterSpacing: 2, textTransform: 'uppercase' }}>Scroll</span>
-          <ChevronDown size={16} />
-        </div>
-        <style>{`
-          @keyframes fadeInDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
-          @keyframes fadeInUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
-          @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-          @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0);} 50%{transform:translateX(-50%) translateY(8px);} }
-          @media (max-width: 768px) {
-            section > div > div:last-child { grid-template-columns: 1fr !important; }
-          }
-        `}</style>
-      </section>
 
-      {/* ABOUT STRIP */}
-      <section style={{ background: 'var(--cream)', padding: '96px 5%' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 72, alignItems: 'center' }}>
-          <Reveal>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: 'var(--terracotta)', display: 'block', marginBottom: 16 }}>Who We Are</span>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(30px, 3.5vw, 44px)', fontWeight: 700, lineHeight: 1.25, color: 'var(--charcoal)', marginBottom: 24 }}>Empowering Counsellors.<br />Supporting Students.</h2>
-            <p style={{ fontSize: 15, color: 'var(--muted)', lineHeight: 1.9, marginBottom: 20 }}>JaliMind is not here to replace the vital work of campus counsellors and psychologists. We exist to amplify their impact — giving them better tools, and giving students better access.</p>
-            <p style={{ fontSize: 15, color: 'var(--muted)', lineHeight: 1.9, marginBottom: 32 }}>Built by a pan-African team who understand the unique pressures students in higher institutions face, JaliMind addresses the gap where 75% of young Africans with mental health needs go untreated.</p>
-            <Link href="/about" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: 'var(--terracotta)', fontWeight: 600, fontSize: 15, borderBottom: '2px solid var(--terracotta)', paddingBottom: 2, transition: 'gap 0.3s' }}
-            onMouseEnter={e => (e.currentTarget as HTMLElement).style.gap = '14px'}
-            onMouseLeave={e => (e.currentTarget as HTMLElement).style.gap = '8px'}
-            >Learn more about our mission <ArrowRight size={16} /></Link>
-          </Reveal>
-          <Reveal delay={200}>
-            <div style={{ borderRadius: 16, overflow: 'hidden', aspectRatio: '4/3', position: 'relative' }}>
-              <Image
-                src={getHeroAsset('hero-team-collaboration')?.src || ''}
-                alt={getHeroAsset('hero-team-collaboration')?.alt || 'The JaliMind team collaborating'}
-                fill
-                style={{ objectFit: 'cover' }}
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-              <div style={{ position: 'absolute', bottom: 20, left: 20, right: 20, background: 'white', borderRadius: 10, padding: '16px 20px', boxShadow: '0 8px 24px rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', gap: 12 }}>
-                <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--terracotta)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><CheckCircle size={20} style={{ color: 'white' }} /></div>
-                <div><p style={{ fontSize: 13, fontWeight: 700, color: 'var(--charcoal)' }}>WHO Recognised Gap</p><p style={{ fontSize: 12, color: 'var(--muted)' }}>75% of youth receive no mental health treatment</p></div>
-              </div>
+          <div className="mx-auto w-full max-w-sm rounded-[1.75rem] bg-white p-5 text-night shadow-pop" aria-label="Example of an anonymous chat">
+            <div className="mb-4 flex items-center gap-2 border-b border-border pb-3">
+              <span className="h-2.5 w-2.5 rounded-full bg-lagoon" aria-hidden />
+              <span className="text-sm font-semibold">BraveBaobab_4821</span>
+              <span className="ml-auto text-xs text-muted-foreground">Anonymous</span>
             </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* STATS BAR */}
-      <section style={{ background: 'var(--terracotta)', padding: '72px 5%' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 32 }}>
-          {[{ value: '75%', label: 'of African youth with mental health needs go untreated', icon: Heart }, { value: '4+', label: 'Universities targeted in our first phase rollout', icon: Award }, { value: '24/7', label: 'AI-powered support available around the clock', icon: Brain }, { value: '5', label: 'African countries in our expansion roadmap', icon: Globe }].map(({ value, label, icon: Icon }, i) => (
-            <Reveal key={i} delay={i * 100}>
-              <div style={{ textAlign: 'center', padding: '0 16px' }}>
-                <div style={{ width: 52, height: 52, borderRadius: '50%', background: 'rgba(255,255,255,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}><Icon size={24} style={{ color: 'white' }} /></div>
-                <div style={{ fontSize: 'clamp(32px, 4vw, 48px)', fontWeight: 900, color: 'white', fontFamily: 'var(--font-display)', lineHeight: 1 }}>{value}</div>
-                <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)', marginTop: 10, lineHeight: 1.6 }}>{label}</p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      {/* SERVICES */}
-      <section style={{ background: 'var(--warm-white)', padding: '100px 5%' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <Reveal style={{ textAlign: 'center', marginBottom: 64 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: 'var(--terracotta)', display: 'block', marginBottom: 12 }}>What We Offer</span>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(30px, 3.5vw, 44px)', fontWeight: 700, color: 'var(--charcoal)', marginBottom: 16 }}>Services Designed for Student Life</h2>
-            <p style={{ fontSize: 16, color: 'var(--muted)', maxWidth: 560, margin: '0 auto', lineHeight: 1.8 }}>Every feature is built around what students actually need — not what fits a Western mental health template.</p>
-          </Reveal>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 28 }}>
-            {homepageServices.map(({ icon: Icon, title, desc, href }, i) => (
-              <Reveal key={i} delay={i * 80}>
-                <Link href={href} style={{ display: 'block', background: 'var(--cream)', borderRadius: 12, padding: '32px 28px', border: '1px solid var(--border)', transition: 'all 0.35s', cursor: 'pointer' }}
-                onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(-6px)'; el.style.boxShadow = '0 20px 48px rgba(0,0,0,0.1)'; el.style.borderColor = 'var(--terracotta)'; }}
-                onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(0)'; el.style.boxShadow = 'none'; el.style.borderColor = 'var(--border)'; }}
-                >
-                  <div style={{ width: 52, height: 52, borderRadius: 10, background: 'var(--terracotta)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}><Icon size={24} style={{ color: 'white' }} /></div>
-                  <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 700, color: 'var(--charcoal)', marginBottom: 12 }}>{title}</h3>
-                  <p style={{ fontSize: 14, color: 'var(--muted)', lineHeight: 1.8 }}>{desc}</p>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 20, color: 'var(--terracotta)', fontSize: 14, fontWeight: 600 }}>Learn more <ChevronRight size={16} /></div>
-                </Link>
-              </Reveal>
-            ))}
+            <div className="space-y-3 text-[15px]">
+              <p className={`${styles.bubble} ${styles.b1} ml-auto max-w-[85%] rounded-2xl rounded-br-md bg-primary px-4 py-2.5 text-white`}>
+                Exams start Monday and I can&apos;t sleep.
+              </p>
+              <p className={`${styles.typing} w-fit rounded-2xl bg-lilac px-4 py-3 text-primary`} aria-hidden>
+                <span /><span /><span />
+              </p>
+              <p className={`${styles.bubble} ${styles.b2} max-w-[85%] rounded-2xl rounded-bl-md bg-lilac px-4 py-2.5`}>
+                That sounds heavy. What worries you most?
+              </p>
+              <p className={`${styles.bubble} ${styles.b3} ml-auto max-w-[85%] rounded-2xl rounded-br-md bg-primary px-4 py-2.5 text-white`}>
+                That I&apos;ll let my family down.
+              </p>
+              <p className={`${styles.bubble} ${styles.b4} max-w-[85%] rounded-2xl rounded-bl-md bg-lilac px-4 py-2.5`}>
+                Thank you for telling me. Let&apos;s take it one step at a time.
+              </p>
+            </div>
+            <p className="mt-4 text-center text-xs text-muted-foreground">Example conversation. Wipe your chat any time.</p>
           </div>
         </div>
       </section>
 
-      {/* WHY JALIMIND */}
-      <section style={{ background: 'var(--cream)', padding: '100px 5%' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 80, alignItems: 'center' }}>
-          <Reveal>
-            <div style={{ position: 'relative' }}>
-              <div style={{ borderRadius: 16, overflow: 'hidden', aspectRatio: '4/5', position: 'relative' }}>
-                <Image
-                  src={getHeroAsset('hero-counselling')?.src || ''}
-                  alt={getHeroAsset('hero-counselling')?.alt || 'Counselor listening to student'}
-                  fill
-                  style={{ objectFit: 'cover', objectPosition: 'center' }}
-                />
-                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(74,40,24,0.4) 0%, rgba(122,80,64,0.6) 100%)' }} />
+      {/* HOW TO TALK: one big, two small */}
+      <section className="bg-mist px-5 py-16 md:py-24">
+        <div className="mx-auto max-w-6xl">
+          <h2 className="max-w-md text-balance font-display text-3xl font-bold md:text-4xl">Choose how you want to talk</h2>
+          <div className="mt-8 grid gap-4 md:grid-cols-5">
+            <Link href="/talk" className="group flex flex-col justify-between rounded-[1.75rem] bg-indigo p-7 text-white shadow-pop md:col-span-3 md:row-span-2 md:p-9">
+              <div>
+                <MessageCircle size={32} className="text-marigold" aria-hidden />
+                <h3 className="mt-5 font-display text-3xl font-bold">Chat anonymously</h3>
+                <p className="mt-2 max-w-sm text-lg text-white/80">No account. A real counsellor replies. Delete it all when you&apos;re done.</p>
               </div>
-              <div style={{ position: 'absolute', top: 32, right: -20, background: 'var(--terracotta)', color: 'white', borderRadius: 12, padding: '20px 24px', boxShadow: '0 16px 40px rgba(139,74,60,0.35)' }}>
-                <div style={{ fontSize: 28, fontWeight: 900, fontFamily: 'var(--font-display)' }}>100%</div>
-                <div style={{ fontSize: 12, opacity: 0.85, marginTop: 4 }}>Confidential<br />Always</div>
-              </div>
-            </div>
-          </Reveal>
-          <Reveal delay={150}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: 'var(--terracotta)', display: 'block', marginBottom: 16 }}>Why JaliMind</span>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 3vw, 40px)', fontWeight: 700, lineHeight: 1.3, color: 'var(--charcoal)', marginBottom: 28 }}>Why Choose a Top African Counselling Platform?</h2>
-            {[
-              { title: 'Built for African Students', desc: 'We understand cultural context, academic systems, and the social pressures unique to university students across Africa.' },
-              { title: 'Certified Professional Staff', desc: 'Every counsellor on JaliMind is verified, licensed, and trained in culturally sensitive mental health care.' },
-              { title: 'Anonymous & Safe by Design', desc: 'Your privacy is non-negotiable. Access support without ever sharing identifying information.' },
-              { title: 'WhatsApp Integration', desc: 'Access support through the platforms you already use — no new app to install.' },
-            ].map(({ title, desc }, i) => (
-              <div key={i} style={{ display: 'flex', gap: 16, marginBottom: 24 }}>
-                <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'var(--terracotta)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2 }}><CheckCircle size={14} style={{ color: 'white' }} /></div>
-                <div>
-                  <p style={{ fontWeight: 700, fontSize: 15, color: 'var(--charcoal)', marginBottom: 4 }}>{title}</p>
-                  <p style={{ fontSize: 14, color: 'var(--muted)', lineHeight: 1.7 }}>{desc}</p>
-                </div>
-              </div>
-            ))}
-            <Link href="/auth/register" style={{ marginTop: 16, background: 'var(--terracotta)', color: 'white', padding: '14px 32px', borderRadius: 6, fontSize: 15, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 8, transition: 'all 0.3s' }}
-            onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'var(--terracotta-dark)'; el.style.transform = 'translateY(-2px)'; }}
-            onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'var(--terracotta)'; el.style.transform = 'translateY(0)'; }}
-            >Get Started Free <ArrowRight size={16} /></Link>
-          </Reveal>
+              <span className="mt-8 inline-flex min-h-[48px] w-fit items-center rounded-full bg-white px-6 font-semibold text-indigo transition-transform group-hover:scale-[1.03]">
+                Start a chat
+              </span>
+            </Link>
+            <Link href="/auth/register" className="rounded-[1.75rem] bg-white p-6 shadow-soft transition-shadow hover:shadow-pop md:col-span-2">
+              <Video size={26} className="text-primary" aria-hidden />
+              <h3 className="mt-3 font-display text-xl font-bold">Book a session</h3>
+              <p className="mt-1 text-muted-foreground">Video, voice or text. Pick a time.</p>
+            </Link>
+            <Link href="/auth/register" className="rounded-[1.75rem] bg-white p-6 shadow-soft transition-shadow hover:shadow-pop md:col-span-2">
+              <Bot size={26} className="text-primary" aria-hidden />
+              <h3 className="mt-3 font-display text-xl font-bold">Ask JaliBot</h3>
+              <p className="mt-1 text-muted-foreground">A quick AI chat, any hour. Short answers.</p>
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* TESTIMONIALS */}
-      <section style={{ background: 'var(--charcoal)', padding: '100px 5%' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <Reveal style={{ textAlign: 'center', marginBottom: 56 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: 'var(--terracotta-light)', display: 'block', marginBottom: 12 }}>Student Voices</span>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 3.5vw, 40px)', fontWeight: 700, color: 'white' }}>What Students Are Saying</h2>
-          </Reveal>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
-            {testimonialsData.map(({ name, university, text }, i) => (
-              <Reveal key={i} delay={i * 120}>
-                <div style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, padding: '32px 28px', transition: 'border-color 0.3s' }}
-                onMouseEnter={e => (e.currentTarget as HTMLElement).style.borderColor = 'var(--terracotta)'}
-                onMouseLeave={e => (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.1)'}
-                >
-                  <Quote size={28} style={{ color: 'var(--terracotta)', marginBottom: 20 }} />
-                  <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', lineHeight: 1.85, marginBottom: 24 }}>{text}</p>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--terracotta)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><span style={{ color: 'white', fontWeight: 700, fontSize: 16 }}>{name[0]}</span></div>
-                    <div><p style={{ fontWeight: 700, color: 'white', fontSize: 14 }}>{name}</p><p style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)' }}>{university}</p></div>
-                    <div style={{ marginLeft: 'auto', display: 'flex', gap: 2 }}>{[1,2,3,4,5].map(s => <Star key={s} size={12} style={{ color: '#F5A623', fill: '#F5A623' }} />)}</div>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
+      {/* CHECK-INS */}
+      <section className="bg-lilac px-5 py-16 md:py-20">
+        <div className="mx-auto grid max-w-6xl gap-8 md:grid-cols-2 md:items-center md:gap-14">
+          <div>
+            <h2 className="text-balance font-display text-3xl font-bold md:text-4xl">Check in with yourself</h2>
+            <p className="mt-3 max-w-md text-lg text-muted-foreground">Two minutes. Private. See how you change over time.</p>
+            <Button asChild variant="default" size="lg" className="mt-6"><Link href="/auth/register">Take a check-in</Link></Button>
           </div>
+          <ul className="space-y-3">
+            {checkIns.map((c) => (
+              <li key={c.tool} className="flex min-h-[64px] items-center gap-4 rounded-2xl bg-white px-5 py-3 shadow-soft">
+                <span className="h-3 w-3 rounded-full bg-lagoon" aria-hidden />
+                <span className="font-display text-lg font-semibold">{c.name}</span>
+                <span className="ml-auto text-sm text-muted-foreground">{c.tool} · {c.q}</span>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
       {/* COUNSELLORS */}
-      <section style={{ background: 'var(--warm-white)', padding: '100px 5%' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <Reveal>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 56, flexWrap: 'wrap', gap: 16 }}>
-              <div>
-                <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: 'var(--terracotta)', display: 'block', marginBottom: 12 }}>Our Team</span>
-                <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 3.5vw, 40px)', fontWeight: 700, color: 'var(--charcoal)' }}>Meet Our Counsellors</h2>
+      <section className="bg-white py-16 md:py-24">
+        <div className="mx-auto max-w-6xl px-5">
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <h2 className="font-display text-3xl font-bold md:text-4xl">Meet the counsellors</h2>
+              <p className="mt-2 text-muted-foreground">Example profiles from our pilot.</p>
+            </div>
+            <Link href="/counsellors" className="hidden min-h-[44px] items-center font-semibold text-primary underline underline-offset-4 sm:flex">See all</Link>
+          </div>
+        </div>
+        <ul className="scrollbar-none mx-auto mt-8 flex max-w-6xl snap-x gap-4 overflow-x-auto px-5 pb-2 md:grid md:grid-cols-4 md:overflow-visible">
+          {team.map((c) => (
+            <li key={c.name} className="w-[68vw] max-w-[260px] shrink-0 snap-start overflow-hidden rounded-3xl border border-border bg-mist md:w-auto md:max-w-none">
+              <div className="relative aspect-[4/5]">
+                <Image src={c.image} alt={c.name} fill sizes="(max-width: 768px) 68vw, 25vw" className="object-cover" />
               </div>
-              <Link href="/counsellors" style={{ color: 'var(--terracotta)', fontWeight: 600, fontSize: 14, display: 'flex', alignItems: 'center', gap: 6, borderBottom: '1px solid var(--terracotta)', paddingBottom: 2 }}>View All <ArrowRight size={14} /></Link>
-            </div>
-          </Reveal>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 24 }}>
-            {featuredCounsellors.map(({ name, role, specialty, country, color, image }, i) => (
-              <Reveal key={i} delay={i * 100}>
-                <div style={{ borderRadius: 12, overflow: 'hidden', border: '1px solid var(--border)', transition: 'all 0.35s' }}
-                onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(-6px)'; el.style.boxShadow = '0 20px 48px rgba(0,0,0,0.1)'; }}
-                onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(0)'; el.style.boxShadow = 'none'; }}
-                >
-                  <div style={{ position: 'relative', height: 300, width: '100%', overflow: 'hidden' }}>
-                    <Image src={image} alt={name} fill style={{ objectFit: 'cover', objectPosition: 'center' }} />
-                  </div>
-                  <div style={{ padding: '20px 20px 24px', background: 'var(--cream)' }}>
-                    <span style={{ fontSize: 11, color: 'var(--terracotta)', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase' }}>{country}</span>
-                    <h4 style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700, color: 'var(--charcoal)', margin: '6px 0 4px' }}>{name}</h4>
-                    <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 4 }}>{role}</p>
-                    <p style={{ fontSize: 12, color: 'var(--terracotta)', fontWeight: 600 }}>{specialty}</p>
-                    <Link href="/auth/register" style={{ marginTop: 16, display: 'block', textAlign: 'center', background: 'none', border: '1.5px solid var(--terracotta)', color: 'var(--terracotta)', padding: '10px', borderRadius: 6, fontSize: 13, fontWeight: 600, transition: 'all 0.3s' }}
-                    onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'var(--terracotta)'; el.style.color = 'white'; }}
-                    onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'none'; el.style.color = 'var(--terracotta)'; }}
-                    >Book a Session</Link>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA BANNER */}
-      <section style={{ background: 'linear-gradient(135deg, var(--terracotta-dark) 0%, var(--terracotta) 60%, var(--terracotta-light) 100%)', padding: '80px 5%', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', inset: 0, backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='1.5' fill='%23ffffff' fill-opacity='0.08'/%3E%3C/svg%3E")` }} />
-        <div style={{ position: 'relative', zIndex: 2 }}>
-          <Reveal>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 800, color: 'white', marginBottom: 16 }}>Claim Your Free Consultation<br />and Begin Healing Today</h2>
-            <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.8)', maxWidth: 520, margin: '0 auto 36px', lineHeight: 1.8 }}>You deserve support. Take the first step — no commitment, no pressure, and completely confidential.</p>
-            <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
-              <Link href="/auth/register" style={{ background: 'white', color: 'var(--terracotta-dark)', padding: '16px 36px', borderRadius: 6, fontSize: 16, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 8, transition: 'all 0.3s' }}
-              onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(-2px)'; el.style.boxShadow = '0 12px 32px rgba(0,0,0,0.25)'; }}
-              onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(0)'; el.style.boxShadow = 'none'; }}
-              >Create Free Account <ArrowRight size={16} /></Link>
-              <Link href="/auth/login" style={{ border: '2px solid rgba(255,255,255,0.5)', color: 'white', padding: '16px 36px', borderRadius: 6, fontSize: 16, fontWeight: 600, transition: 'all 0.3s', display: 'inline-block' }}
-              onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.1)'}
-              onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
-              >Sign In</Link>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* CASE STUDIES */}
-      <section style={{ background: 'var(--cream)', padding: '100px 5%' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <Reveal>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 56, flexWrap: 'wrap', gap: 16 }}>
-              <div><span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: 'var(--terracotta)', display: 'block', marginBottom: 12 }}>Impact</span><h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 3.5vw, 40px)', fontWeight: 700, color: 'var(--charcoal)' }}>Explore Recent Case Studies</h2></div>
-              <Link href="/case-studies" style={{ color: 'var(--terracotta)', fontWeight: 600, fontSize: 14, display: 'flex', alignItems: 'center', gap: 6, borderBottom: '1px solid var(--terracotta)', paddingBottom: 2 }}>View All <ArrowRight size={14} /></Link>
-            </div>
-          </Reveal>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
-            {caseStudiesData.map(({ title, tag, summary, color, thumbnail }, i) => (
-              <Reveal key={i} delay={i * 100}>
-                <Link href="/case-studies" style={{ display: 'block', borderRadius: 12, overflow: 'hidden', border: '1px solid var(--border)', transition: 'all 0.35s' }}
-                onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(-6px)'; el.style.boxShadow = '0 20px 48px rgba(0,0,0,0.1)'; }}
-                onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(0)'; el.style.boxShadow = 'none'; }}
-                >
-                  <div style={{ position: 'relative', height: 180, width: '100%', overflow: 'hidden' }}>
-                    <Image src={thumbnail} alt={title} fill style={{ objectFit: 'cover' }} />
-                  </div>
-                  <div style={{ padding: '24px 24px 28px', background: 'white' }}>
-                    <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: 'var(--terracotta)' }}>{tag}</span>
-                    <h4 style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700, color: 'var(--charcoal)', margin: '10px 0 10px' }}>{title}</h4>
-                    <p style={{ fontSize: 14, color: 'var(--muted)', lineHeight: 1.7 }}>{summary.substring(0, 100)}...</p>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 16, color: 'var(--terracotta)', fontSize: 13, fontWeight: 600 }}>Read case study <ChevronRight size={14} /></div>
-                  </div>
+              <div className="p-4">
+                <p className="font-display text-lg font-semibold leading-tight">{c.name}</p>
+                <p className="text-sm text-muted-foreground">{c.role}</p>
+                <p className="mt-1 text-sm font-medium text-primary">{c.specialty}</p>
+                <Link href="/auth/register" className="mt-3 flex min-h-[44px] items-center justify-center rounded-full border-2 border-primary text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-white">
+                  Book a session
                 </Link>
-              </Reveal>
-            ))}
+              </div>
+            </li>
+          ))}
+        </ul>
+        <div className="mt-4 px-5 text-center sm:hidden">
+          <Link href="/counsellors" className="inline-flex min-h-[44px] items-center font-semibold text-primary underline underline-offset-4">See all counsellors</Link>
+        </div>
+      </section>
+
+      {/* WHY */}
+      <section className="bg-mist px-5 py-16 md:py-24">
+        <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-2 md:items-center md:gap-16">
+          {why && (
+            <div className="relative aspect-[4/3] overflow-hidden rounded-[2rem] shadow-pop">
+              <Image src={why.src} alt={why.alt} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
+            </div>
+          )}
+          <div>
+            <h2 className="text-balance font-display text-3xl font-bold md:text-4xl">Built for how students live</h2>
+            <ul className="mt-6 space-y-4">
+              {[
+                'Made for African university students',
+                'Private by design. We never share chats with your university.',
+                'Crisis lines for Kenya, Nigeria, Ghana and South Africa',
+              ].map((t) => (
+                <li key={t} className="flex gap-3 text-lg">
+                  <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-lagoon text-white"><Check size={14} aria-hidden /></span>
+                  {t}
+                </li>
+              ))}
+            </ul>
           </div>
+        </div>
+      </section>
+
+      {/* ALSO INSIDE */}
+      <section className="bg-white px-5 py-16 md:py-20">
+        <div className="mx-auto max-w-3xl">
+          <h2 className="font-display text-3xl font-bold md:text-4xl">Also inside</h2>
+          <ul className="mt-6 divide-y divide-border">
+            {alsoInside.map(({ icon: Icon, title, text }) => (
+              <li key={title} className="flex items-start gap-4 py-5">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-lilac text-primary"><Icon size={22} aria-hidden /></span>
+                <div>
+                  <p className="font-display text-lg font-semibold">{title}</p>
+                  <p className="text-muted-foreground">{text}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <WhatsAppLink className="mt-2 inline-flex min-h-[44px] items-center font-semibold text-primary underline underline-offset-4" />
         </div>
       </section>
 
       {/* FAQ */}
-      <section style={{ background: 'var(--warm-white)', padding: '100px 5%' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 80, alignItems: 'start' }}>
-          <Reveal>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: 'var(--terracotta)', display: 'block', marginBottom: 16 }}>FAQ</span>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 3vw, 40px)', fontWeight: 700, color: 'var(--charcoal)', lineHeight: 1.3, marginBottom: 24 }}>Questions Students Often Ask</h2>
-            <p style={{ fontSize: 15, color: 'var(--muted)', lineHeight: 1.8, marginBottom: 32 }}>We believe transparency builds trust. Here are the questions we hear most from students before they take the first step.</p>
-            <Link href="/contact" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--terracotta)', color: 'white', padding: '14px 28px', borderRadius: 6, fontSize: 14, fontWeight: 600, transition: 'background 0.3s' }}
-            onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'var(--terracotta-dark)'}
-            onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'var(--terracotta)'}
-            >Ask Us Anything <ArrowRight size={16} /></Link>
-          </Reveal>
-          <Reveal delay={100}>
-            <div>
-              {faqsData.map(({ q, a }, i) => (
-                <div key={i} style={{ borderBottom: '1px solid var(--border)' }}>
-                  <button onClick={() => setOpenFaq(openFaq === i ? null : i)} style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 0', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}>
-                    <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--charcoal)', paddingRight: 16 }}>{q}</span>
-                    <ChevronDown size={18} style={{ color: 'var(--terracotta)', flexShrink: 0, transform: openFaq === i ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.3s' }} />
-                  </button>
-                  <div style={{ maxHeight: openFaq === i ? 200 : 0, overflow: 'hidden', transition: 'max-height 0.4s ease' }}>
-                    <p style={{ fontSize: 14, color: 'var(--muted)', lineHeight: 1.85, paddingBottom: 20 }}>{a}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* BOOKING FORM */}
-      <section style={{ background: 'var(--cream)', padding: '80px 5%' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 64, alignItems: 'center' }}>
-          <Reveal>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: 'var(--terracotta)', display: 'block', marginBottom: 16 }}>Get Started</span>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 3vw, 40px)', fontWeight: 700, color: 'var(--charcoal)', lineHeight: 1.3, marginBottom: 20 }}>Book an Appointment</h2>
-            <p style={{ fontSize: 15, color: 'var(--muted)', lineHeight: 1.85, marginBottom: 24 }}>Schedule a session at your convenience. All counsellors are available in video, voice, or text format.</p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {['Choose your preferred counsellor or session type', 'Select a time that fits your schedule', 'Begin your confidential session'].map((step, i) => (
-                <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--terracotta)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><span style={{ color: 'white', fontSize: 12, fontWeight: 700 }}>{i + 1}</span></div>
-                  <p style={{ fontSize: 14, color: 'var(--charcoal)' }}>{step}</p>
-                </div>
-              ))}
-            </div>
-          </Reveal>
-          <Reveal delay={100}>
-            <div style={{ background: 'white', borderRadius: 16, padding: '40px', border: '1px solid var(--border)', boxShadow: '0 8px 32px rgba(0,0,0,0.06)' }}>
-              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 700, color: 'var(--charcoal)', marginBottom: 8 }}>Ready to Begin?</h3>
-              <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 28, lineHeight: 1.75 }}>Create a free account and access JaliBot AI, anonymous Shadow Chat, our counsellor directory, and the Jali Library — all in one place.</p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                <Link href="/auth/register" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'var(--terracotta)', color: 'white', padding: '15px', borderRadius: 6, fontSize: 15, fontWeight: 700, transition: 'all 0.3s' }}
-                onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'var(--terracotta-dark)'; el.style.transform = 'translateY(-2px)'; }}
-                onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'var(--terracotta)'; el.style.transform = 'translateY(0)'; }}
-                >Create Free Account <ArrowRight size={16} /></Link>
-                <Link href="/auth/login" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'none', border: '1.5px solid var(--border)', color: 'var(--charcoal)', padding: '14px', borderRadius: 6, fontSize: 14, fontWeight: 600, transition: 'all 0.3s' }}
-                onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'var(--terracotta)'; el.style.color = 'var(--terracotta)'; }}
-                onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'var(--border)'; el.style.color = 'var(--charcoal)'; }}
-                >Already have an account? Sign In</Link>
-                <p style={{ fontSize: 12, color: 'var(--muted)', textAlign: 'center', marginTop: 4 }}>100% confidential · No credit card required</p>
-              </div>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* BLOG */}
-      <section style={{ background: 'var(--warm-white)', padding: '100px 5%' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <Reveal style={{ textAlign: 'center', marginBottom: 56 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: 'var(--terracotta)', display: 'block', marginBottom: 12 }}>Insights</span>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 3.5vw, 40px)', fontWeight: 700, color: 'var(--charcoal)' }}>Latest from the Blog</h2>
-          </Reveal>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 28 }}>
-            {blogPostsData.slice(0, 3).map(({ title, tag, date, readTime, image, color }, i) => (
-              <Reveal key={i} delay={i * 100}>
-                <Link href="/blog" style={{ display: 'block', borderRadius: 12, overflow: 'hidden', border: '1px solid var(--border)', transition: 'all 0.35s' }}
-                onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(-4px)'; el.style.boxShadow = '0 16px 40px rgba(0,0,0,0.08)'; }}
-                onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.transform = 'translateY(0)'; el.style.boxShadow = 'none'; }}
-                >
-                  <div style={{ height: 300, background: `linear-gradient(135deg, ${color}30, ${color}70)`, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
-                    <Image
-                      src={image}
-                      alt={title}
-                      fill
-                      style={{ objectFit: 'cover', objectPosition: 'center' }}
-                    />
-                  </div>
-                  <div style={{ padding: '24px 24px 28px', background: 'white' }}>
-                    <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: 'var(--terracotta)' }}>{tag}</span>
-                    <h4 style={{ fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700, color: 'var(--charcoal)', margin: '10px 0 12px', lineHeight: 1.4 }}>{title}</h4>
-                    <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                      <span style={{ fontSize: 12, color: 'var(--muted)' }}>{date}</span>
-                      <span style={{ width: 4, height: 4, borderRadius: '50%', background: 'var(--muted)' }} />
-                      <span style={{ fontSize: 12, color: 'var(--muted)' }}>{readTime}</span>
-                    </div>
-                  </div>
-                </Link>
-              </Reveal>
-            ))}
-          </div>
-          <Reveal style={{ textAlign: 'center', marginTop: 40 }}>
-            <Link href="/blog" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, border: '1.5px solid var(--terracotta)', color: 'var(--terracotta)', padding: '13px 28px', borderRadius: 6, fontSize: 14, fontWeight: 600, transition: 'all 0.3s' }}
-            onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'var(--terracotta)'; el.style.color = 'white'; }}
-            onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'transparent'; el.style.color = 'var(--terracotta)'; }}
-            >View All Articles <ArrowRight size={15} /></Link>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* PARTNERS */}
-      <section style={{ background: 'var(--sand)', padding: '56px 5%' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ fontSize: 13, fontWeight: 600, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--muted)', marginBottom: 32 }}>Targeting Partnerships With</p>
-          <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
-            {['University of Lagos', 'University of Nairobi', 'KNUST Ghana', 'University of Cape Town', 'Makerere University'].map((name, i) => (
-              <div key={i} style={{ padding: '10px 20px', border: '1px solid var(--border)', borderRadius: 6, background: 'white', fontSize: 13, fontWeight: 600, color: 'var(--muted)', transition: 'all 0.3s' }}
-              onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'var(--terracotta)'; el.style.color = 'var(--terracotta)'; }}
-              onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'var(--border)'; el.style.color = 'var(--muted)'; }}
-              >{name}</div>
+      <section className="bg-lilac px-5 py-16 md:py-20">
+        <div className="mx-auto max-w-3xl">
+          <h2 className="font-display text-3xl font-bold md:text-4xl">Quick answers</h2>
+          <div className="mt-6 space-y-3">
+            {faqsData.map(({ q, a }) => (
+              <details key={q} className="group rounded-2xl bg-white px-5 shadow-soft">
+                <summary className="flex min-h-[60px] cursor-pointer list-none items-center justify-between gap-4 font-display text-[17px] font-semibold [&::-webkit-details-marker]:hidden">
+                  {q}
+                  <ChevronDown size={20} className="shrink-0 text-primary transition-transform group-open:rotate-180" aria-hidden />
+                </summary>
+                <p className="pb-5 text-muted-foreground">{a}</p>
+              </details>
             ))}
           </div>
         </div>
       </section>
 
-      <Footer />
-    </>
+      {/* CLOSING: crisis lines + the one action */}
+      <section className="bg-night px-5 py-16 text-white md:py-24">
+        <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-2 md:items-center md:gap-16">
+          <div>
+            <h2 className="text-balance font-display text-3xl font-bold md:text-5xl">Not okay right now?</h2>
+            <p className="mt-3 max-w-md text-lg text-white/75">You don&apos;t have to explain yourself. Just start.</p>
+            <Button asChild variant="cta" size="lg" className="mt-6"><Link href="/talk">Talk to someone now</Link></Button>
+          </div>
+          <div>
+            <p className="mb-3 font-semibold">In danger? Call a free line:</p>
+            <CrisisLines dark />
+          </div>
+        </div>
+      </section>
+    </MarketingPage>
   );
 }

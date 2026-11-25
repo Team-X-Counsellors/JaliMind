@@ -2,140 +2,127 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+  JaliMind design system v2
+  Night indigo for trust and focus, marigold for the one action that matters,
+  lagoon teal for calm and "you're okay", hibiscus only for alerts/crisis.
+  Mobile first: 16px inputs (no iOS zoom), 44px+ tap targets, safe-area aware.
+*/
 @layer base {
   :root {
-    /* shadcn token mappings → terracotta palette */
-    --background: 40 30% 98%;
-    --foreground: 0 0% 17%;
+    --background: 247 100% 98%;
+    --foreground: 244 46% 14%;
 
-    --card: 36 35% 97%;
-    --card-foreground: 0 0% 17%;
+    --card: 0 0% 100%;
+    --card-foreground: 244 46% 14%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 244 46% 14%;
 
-    --popover: 40 30% 98%;
-    --popover-foreground: 0 0% 17%;
+    --primary: 243 57% 49%;
+    --primary-foreground: 0 0% 100%;
 
-    --primary: 9 42% 39%;
-    --primary-foreground: 36 100% 98%;
+    --secondary: 246 60% 94%;
+    --secondary-foreground: 243 57% 35%;
 
-    --secondary: 36 20% 88%;
-    --secondary-foreground: 9 35% 30%;
+    --muted: 246 40% 95%;
+    --muted-foreground: 244 16% 38%;
 
-    --muted: 36 18% 90%;
-    --muted-foreground: 25 8% 42%;
+    --accent: 40 100% 57%;
+    --accent-foreground: 244 46% 14%;
 
-    --accent: 120 18% 34%;
-    --accent-foreground: 36 100% 98%;
+    --calm: 174 71% 38%;
+    --calm-foreground: 0 0% 100%;
 
-    --destructive: 0 72% 51%;
+    --destructive: 349 75% 52%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 36 18% 85%;
-    --input: 36 18% 85%;
-    --ring: 9 42% 39%;
+    --border: 246 30% 89%;
+    --input: 246 30% 85%;
+    --ring: 243 57% 49%;
 
-    --radius: 0.5rem;
+    --radius: 1rem;
 
-    /* Brand aliases (kept for legacy CSS in marketing pages) */
-    --cream: #F9F5F0;
-    --warm-white: #FDFAF6;
-    --sand: #EDE8DF;
-    --terracotta: #8B4A3C;
-    --terracotta-light: #A85B4A;
-    --terracotta-dark: #6B3228;
-    --sage: #4A6741;
-    --sage-light: #6B8F68;
-    --charcoal: #2C2C2C;
-    --charcoal-soft: #3D3D3D;
-    --muted-raw: #6B6560;
-    --border-raw: #DDD8D0;
+    /* Raw hex tokens for hand-styled marketing sections */
+    --night: #17163B;
+    --night-soft: #2A2858;
+    --indigo: #3D35C4;
+    --indigo-light: #6A62E8;
+    --indigo-dark: #2A2490;
+    --marigold: #FFB224;
+    --marigold-dark: #E89A00;
+    --lagoon: #1FB5A3;
+    --lagoon-light: #5FD3C5;
+    --hibiscus: #E5405E;
+    --mist: #F6F5FF;
+    --lilac: #ECE9FF;
+    --ink-muted: #5C5A80;
+    --line: #DCD9F5;
+
+    /* Legacy aliases so un-migrated pages pick up the new palette instead of the old one */
+    --cream: var(--mist);
+    --warm-white: #FFFFFF;
+    --sand: var(--lilac);
+    --terracotta: var(--indigo);
+    --terracotta-light: var(--indigo-light);
+    --terracotta-dark: var(--indigo-dark);
+    --sage: var(--lagoon);
+    --sage-light: var(--lagoon-light);
+    --charcoal: var(--night);
+    --charcoal-soft: var(--night-soft);
+    --muted-raw: var(--ink-muted);
+    --border-raw: var(--line);
+
+    --font-display: var(--font-lexend), system-ui, sans-serif;
   }
 
-  * {
-    @apply border-border;
-    box-sizing: border-box;
-  }
+  * { @apply border-border; box-sizing: border-box; }
 
-  html {
-    scroll-behavior: smooth;
-  }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 
   body {
     @apply bg-background text-foreground;
-    font-family: var(--font-jakarta), system-ui, sans-serif;
+    font-family: var(--font-figtree), system-ui, sans-serif;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-bricolage), Georgia, serif;
+    font-family: var(--font-lexend), system-ui, sans-serif;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
   }
 
   a { color: inherit; text-decoration: none; }
-  img { max-width: 100%; display: block; }
+  img, video { max-width: 100%; display: block; }
 
-  ::selection { background: var(--terracotta); color: white; }
-
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: var(--cream); }
-  ::-webkit-scrollbar-thumb { background: var(--terracotta); border-radius: 3px; }
-}
-
-/* Mobile Touch-Friendly Spacing */
-button, a, input, textarea, select {
-  min-height: 44px;
-  min-width: 44px;
-}
-
-/* Responsive Typography */
-@media (max-width: 768px) {
-  body { font-size: 16px; line-height: 1.5; }
-  h1 { font-size: clamp(28px, 6vw, 48px); }
-  h2 { font-size: clamp(24px, 5vw, 40px); }
-  h3 { font-size: clamp(18px, 4vw, 28px); }
-}
-
-/* Tablet and Desktop - optimize hero image */
-@media (min-width: 768px) {
-  .hero-image-container { width: 55% !important; right: 0 !important; left: auto !important; }
-}
-
-/* Mid-range mobile devices (480px - 640px) */
-@media (max-width: 640px) and (min-width: 480px) {
-  .hero-image-container { width: 65% !important; height: 320px !important; opacity: 0.5 !important; }
-}
-
-/* Mobile Layout Adjustments */
-@media (max-width: 640px) {
-  section { padding-left: 5% !important; padding-right: 5% !important; }
-
-  .hero-image-container {
-    width: 80% !important; height: 500px !important;
-    right: 0 !important; left: auto !important;
-    top: 40% !important; transform: translateY(-50%) !important; opacity: 0.6 !important;
-  }
-
-  section:first-of-type > div:nth-child(3) { padding: 60px 5% 80px !important; }
-  section:first-of-type > div:nth-child(3) > div { max-width: 100% !important; }
-  section:first-of-type h1 { font-size: clamp(28px, 7vw, 42px) !important; margin-bottom: 16px !important; }
-  section:first-of-type p { font-size: 15px !important; margin-bottom: 24px !important; }
-  section:first-of-type [style*="animation"] { animation-delay: 0s !important; }
-
-  button:not(:disabled), a[href], input[type="button"], input[type="submit"] {
-    padding: clamp(12px, 4vw, 16px) clamp(16px, 5vw, 24px) !important;
-    min-height: 48px !important;
-  }
-
-  input:not([type="checkbox"]):not([type="radio"]), textarea, select {
-    padding: 14px 12px !important; font-size: 16px !important; min-height: 48px !important;
-  }
-
+  /* 16px+ on inputs stops iOS Safari zooming the page when a field is focused */
   input, textarea, select { font-size: 16px; }
+
+  ::selection { background: var(--indigo); color: white; }
+
+  :focus-visible { outline: 3px solid hsl(var(--ring) / 0.55); outline-offset: 2px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }
 
-/* Ultra-mobile devices (< 375px) */
-@media (max-width: 375px) {
-  :root { font-size: 14px; }
-  h1 { font-size: clamp(24px, 8vw, 32px); }
-  button { padding: 12px 16px !important; font-size: 13px !important; }
-  .hero-image-container { width: 60% !important; height: 250px !important; opacity: 0.3 !important; }
+@layer utilities {
+  /* Honour the iPhone home indicator / Android gesture bar under fixed bottom UI */
+  .pb-safe { padding-bottom: max(0.5rem, env(safe-area-inset-bottom)); }
+  .h-dvh-screen { height: 100dvh; }
+  .min-h-dvh-screen { min-height: 100dvh; }
+  .tap { min-height: 44px; min-width: 44px; }
+  .text-balance { text-wrap: balance; }
+  .shadow-soft { box-shadow: 0 1px 2px rgb(23 22 59 / 0.04), 0 8px 24px -8px rgb(61 53 196 / 0.14); }
+  .shadow-pop { box-shadow: 0 2px 4px rgb(23 22 59 / 0.06), 0 16px 40px -12px rgb(61 53 196 / 0.28); }
+  .scrollbar-none { scrollbar-width: none; }
+  .bg-orb { background: radial-gradient(circle at 30% 28%, #A6F3E8 0%, #1FB5A3 34%, #3D35C4 82%); }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
 }

@@ -2,17 +2,20 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useAuth } from '@/contexts/AuthContext';
+import { Eye, EyeOff } from 'lucide-react';
+import { useAuth, homeFor } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import AuthShell from '@/components/AuthShell';
+import GoogleSignInButton from '@/components/GoogleSignInButton';
 
 export default function LoginPage() {
   const { login } = useAuth();
   const router = useRouter();
-  const [username, setUsername] = useState('');
+  const [identity, setIdentity] = useState('');
   const [password, setPassword] = useState('');
+  const [show, setShow] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -21,81 +24,52 @@ export default function LoginPage() {
     setError('');
     setLoading(true);
     try {
-      await login(username, password);
-      router.push('/dashboard');
-    } catch (err: unknown) {
-      const msg = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail;
-      setError(msg || 'Invalid credentials. Please try again.');
-    } finally {
+      const user = await login(identity.trim(), password);
+      router.replace(homeFor(user?.role));
+    } catch {
+      setError('That email or password is not right. Try again, or use Google.');
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-primary font-display">JaliMind</h1>
-          <p className="text-muted-foreground mt-1">Guidance & Counselling Platform</p>
-        </div>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Welcome back</CardTitle>
-            <CardDescription>Sign in to your account to continue</CardDescription>
-          </CardHeader>
-          <form onSubmit={handleSubmit}>
-            <CardContent className="space-y-4">
-              {error && (
-                <div className="rounded-md bg-destructive/10 border border-destructive/20 px-4 py-3 text-sm text-destructive">
-                  {error}
-                </div>
-              )}
-              <div className="space-y-2">
-                <Label htmlFor="username">Username</Label>
-                <Input
-                  id="username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder="your.username"
-                  required
-                  autoComplete="username"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
-                  autoComplete="current-password"
-                />
-              </div>
-            </CardContent>
-            <CardFooter className="flex flex-col gap-4">
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? 'Signing in…' : 'Sign in'}
-              </Button>
-              <p className="text-sm text-center text-muted-foreground">
-                Don&apos;t have an account?{' '}
-                <Link href="/auth/register" className="text-primary hover:underline font-medium">
-                  Register
-                </Link>
-              </p>
-            </CardFooter>
-          </form>
-        </Card>
-
-        <p className="text-center mt-6 text-sm text-muted-foreground">
-          Need anonymous support?{' '}
-          <Link href="/dashboard/shadow" className="text-primary hover:underline">
-            Try Shadow Chat
-          </Link>
-        </p>
+    <AuthShell title="Welcome back" subtitle="Pick up where you left off.">
+      <GoogleSignInButton oneTap />
+      <div className="my-6 flex items-center gap-3 text-xs text-muted-foreground">
+        <span className="h-px flex-1 bg-border" />or use your email<span className="h-px flex-1 bg-border" />
       </div>
-    </div>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {error && (
+          <div role="alert" className="rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+            {error}
+          </div>
+        )}
+        <div className="space-y-1.5">
+          <Label htmlFor="identity">Email or username</Label>
+          <Input id="identity" value={identity} onChange={(e) => setIdentity(e.target.value)} required autoComplete="username" autoCapitalize="none" />
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="password">Password</Label>
+          <div className="relative">
+            <Input id="password" type={show ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" className="pr-12" />
+            <button type="button" onClick={() => setShow((s) => !s)} aria-label={show ? 'Hide password' : 'Show password'}
+              className="tap absolute right-1 top-1/2 flex -translate-y-1/2 items-center justify-center text-muted-foreground">
+              {show ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          </div>
+        </div>
+        <Button type="submit" variant="cta" size="lg" className="w-full" disabled={loading}>
+          {loading ? 'Signing in…' : 'Sign in'}
+        </Button>
+      </form>
+
+      <p className="mt-6 text-center text-sm text-muted-foreground">
+        New here? <Link href="/auth/register" className="font-semibold text-primary underline">Create a free account</Link>
+      </p>
+      <p className="mt-3 text-center text-sm text-muted-foreground">
+        Just want to talk? <Link href="/talk" className="font-semibold text-primary underline">Chat anonymously</Link>
+      </p>
+    </AuthShell>
   );
 }

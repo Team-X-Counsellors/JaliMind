@@ -1,3 +1,5 @@
+// EXAMPLE CONTENT ONLY. These are illustrative placeholders, NOT real students, quotes or results.
+// Do not present them as real testimonials, outcomes or statistics anywhere on the site.
 import { LucideIcon, TrendingUp, Users, Shield } from 'lucide-react';
 
 export interface CaseStudyOutcome {

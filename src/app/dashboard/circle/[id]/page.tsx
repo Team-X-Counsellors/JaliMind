@@ -1,112 +1,61 @@
 'use client';
 import { useEffect, useState, useCallback } from 'react';
-import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import api from '@/lib/api';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { relativeTime } from '@/lib/format';
 import { Button } from '@/components/ui/button';
 import { buildReplyTree, Reply, ReplyNode } from '@/lib/replyTree';
+import { Empty, PageHeader, Spinner } from '@/components/student/ui';
 
-interface Thread {
-  id: string;
-  title: string;
-  body: string;
-  author_display: string;
-  category_name: string;
-  created_at: string;
-}
+interface Thread { id: string; title: string; body: string; author_display: string; category_name: string; created_at: string }
 
-const MAX_VISUAL_DEPTH = 6;
+const MAX_VISUAL_DEPTH = 3; // deeper than this is capped so replies stay readable on a phone
 
-function ReplyForm({
-  onSubmit,
-  onCancel,
-  autoFocus,
-}: {
-  onSubmit: (body: string) => Promise<void>;
-  onCancel?: () => void;
-  autoFocus?: boolean;
-}) {
+function ReplyForm({ onSubmit, onCancel, autoFocus }: { onSubmit: (body: string) => Promise<void>; onCancel?: () => void; autoFocus?: boolean }) {
   const [body, setBody] = useState('');
   const [posting, setPosting] = useState(false);
+  const [err, setErr] = useState('');
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!body.trim()) return;
-    setPosting(true);
-    try {
-      await onSubmit(body);
-      setBody('');
-      onCancel?.();
-    } finally {
-      setPosting(false);
-    }
+    setPosting(true); setErr('');
+    try { await onSubmit(body); setBody(''); onCancel?.(); }
+    catch { setErr('Could not post your reply. Try again.'); }
+    finally { setPosting(false); }
   };
 
   return (
     <form onSubmit={submit} className="space-y-2">
-      <textarea
-        autoFocus={autoFocus}
-        className="w-full min-h-[70px] rounded-md border border-input bg-background px-3 py-2 text-sm resize-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        placeholder="Write a reply…"
-        value={body}
-        onChange={(e) => setBody(e.target.value)}
-      />
+      <textarea autoFocus={autoFocus} aria-label="Your reply" placeholder="Write a reply" value={body} onChange={(e) => setBody(e.target.value)} rows={3}
+        className="w-full resize-none rounded-xl border-2 border-input bg-card px-4 py-3 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" />
+      {err && <p role="alert" className="text-sm text-destructive">{err}</p>}
       <div className="flex gap-2">
-        <Button type="submit" size="sm" disabled={posting}>{posting ? 'Posting…' : 'Reply'}</Button>
-        {onCancel && (
-          <Button type="button" size="sm" variant="ghost" onClick={onCancel}>Cancel</Button>
-        )}
+        <Button type="submit" size="sm" disabled={posting || !body.trim()}>{posting ? 'Posting…' : 'Reply'}</Button>
+        {onCancel && <Button type="button" size="sm" variant="ghost" onClick={onCancel}>Cancel</Button>}
       </div>
     </form>
   );
 }
 
-function ReplyItem({
-  node,
-  depth,
-  onReply,
-}: {
-  node: ReplyNode;
-  depth: number;
-  onReply: (parentId: string, body: string) => Promise<void>;
-}) {
+function ReplyItem({ node, depth, onReply }: { node: ReplyNode; depth: number; onReply: (parentId: string, body: string) => Promise<void> }) {
   const [replying, setReplying] = useState(false);
-  const indent = Math.min(depth, MAX_VISUAL_DEPTH) * 20;
-
   return (
-    <div style={{ marginLeft: indent }} className="border-l border-border pl-3">
-      <div className="py-2">
-        <p className="text-xs text-muted-foreground">
-          {node.author_display} · {new Date(node.created_at).toLocaleString()}
-        </p>
-        <p className="text-sm whitespace-pre-wrap mt-1">{node.body}</p>
-        <button
-          onClick={() => setReplying((v) => !v)}
-          className="text-xs text-primary mt-1 hover:underline"
-        >
-          {replying ? 'Cancel' : 'Reply'}
-        </button>
-        {replying && (
-          <div className="mt-2">
-            <ReplyForm
-              autoFocus
-              onCancel={() => setReplying(false)}
-              onSubmit={(body) => onReply(node.id, body)}
-            />
-          </div>
-        )}
+    <div className={depth > 0 && depth <= MAX_VISUAL_DEPTH ? 'ml-3 border-l-2 border-secondary pl-3 sm:ml-5' : depth > MAX_VISUAL_DEPTH ? 'border-l-2 border-secondary pl-3' : ''}>
+      <div className="py-2.5">
+        <p className="text-xs text-muted-foreground"><span className="font-semibold text-foreground">{node.author_display}</span> · {relativeTime(node.created_at)}</p>
+        <p className="mt-1 whitespace-pre-wrap break-words">{node.body}</p>
+        <button onClick={() => setReplying((v) => !v)} className="tap -ml-1 mt-0.5 px-1 text-sm font-semibold text-primary">{replying ? 'Cancel' : 'Reply'}</button>
+        {replying && <div className="mt-2"><ReplyForm autoFocus onCancel={() => setReplying(false)} onSubmit={(b) => onReply(node.id, b)} /></div>}
       </div>
-      {node.children.map((child) => (
-        <ReplyItem key={child.id} node={child} depth={depth + 1} onReply={onReply} />
-      ))}
+      {node.children.map((c) => <ReplyItem key={c.id} node={c} depth={depth + 1} onReply={onReply} />)}
     </div>
   );
 }
 
 export default function ThreadDetailPage() {
-  const params = useParams<{ id: string }>();
-  const threadId = params.id;
+  const { id: threadId } = useParams<{ id: string }>();
   const [thread, setThread] = useState<Thread | null>(null);
   const [replies, setReplies] = useState<Reply[]>([]);
   const [loading, setLoading] = useState(true);
@@ -119,63 +68,43 @@ export default function ThreadDetailPage() {
   useEffect(() => {
     Promise.all([
       api.get(`/api/circle/threads/${threadId}/`).then(({ data }) => setThread(data)),
-      loadReplies(),
-    ]).finally(() => setLoading(false));
-  }, [threadId, loadReplies]);
+      api.get(`/api/circle/threads/${threadId}/replies/`).then(({ data }) => setReplies(data)),
+    ])
+      .catch(() => {}).finally(() => setLoading(false));
+  }, [threadId]);
 
-  const postReply = async (body: string, parentReply: string | null) => {
+  const postReply = async (body: string, parent: string | null) => {
     const payload: Record<string, unknown> = { body };
-    if (parentReply) payload.parent_reply = parentReply;
+    if (parent) payload.parent_reply = parent;
     await api.post(`/api/circle/threads/${threadId}/replies/`, payload);
     await loadReplies();
   };
 
-  if (loading) return <p className="text-muted-foreground text-sm">Loading discussion…</p>;
-  if (!thread) return <p className="text-muted-foreground text-sm">Thread not found.</p>;
-
-  const tree = buildReplyTree(replies);
+  if (loading) return <Spinner />;
+  if (!thread) return <Empty title="Post not found" action={<Button asChild><Link href="/dashboard/circle">Back to Circle</Link></Button>} />;
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <Link href="/dashboard/circle" className="text-sm text-primary hover:underline">
-        ← Back to Circle
-      </Link>
+    <div>
+      <PageHeader title={thread.title} back="/dashboard/circle" />
+      <article className="rounded-2xl bg-card p-4 shadow-soft ring-1 ring-border">
+        <p className="text-xs text-muted-foreground">
+          {thread.category_name && <span className="mr-2 font-semibold text-primary">{thread.category_name}</span>}
+          {thread.author_display} · {relativeTime(thread.created_at)}
+        </p>
+        <p className="mt-2 whitespace-pre-wrap break-words">{thread.body}</p>
+      </article>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-xl">{thread.title}</CardTitle>
-          <CardDescription className="text-xs">
-            {thread.category_name && <span className="text-primary mr-2">{thread.category_name}</span>}
-            by {thread.author_display} · {new Date(thread.created_at).toLocaleString()}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm whitespace-pre-wrap">{thread.body}</p>
-        </CardContent>
-      </Card>
+      <section className="mt-5" aria-label="Add a reply">
+        <ReplyForm onSubmit={(b) => postReply(b, null)} />
+      </section>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Add a reply</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ReplyForm onSubmit={(body) => postReply(body, null)} />
-        </CardContent>
-      </Card>
-
-      <div className="space-y-1">
-        {tree.length === 0 && (
-          <p className="text-muted-foreground text-sm">No replies yet. Be the first to respond.</p>
-        )}
-        {tree.map((node) => (
-          <ReplyItem
-            key={node.id}
-            node={node}
-            depth={0}
-            onReply={(parentId, body) => postReply(body, parentId)}
-          />
-        ))}
-      </div>
+      <section className="mt-6" aria-label="Replies">
+        <h2 className="mb-1 font-display text-sm font-semibold text-muted-foreground">{replies.length} {replies.length === 1 ? 'reply' : 'replies'}</h2>
+        {replies.length === 0 && <p className="text-sm text-muted-foreground">No replies yet. Be the first.</p>}
+        <div className="divide-y divide-border/60">
+          {buildReplyTree(replies).map((n) => <ReplyItem key={n.id} node={n} depth={0} onReply={(pid, b) => postReply(b, pid)} />)}
+        </div>
+      </section>
     </div>
   );
 }

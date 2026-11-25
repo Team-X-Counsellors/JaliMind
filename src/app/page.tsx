@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { counsellorsData } from '@/data/counsellors';
 import { faqsData } from '@/data/faqs';
 import { getHeroAsset } from '@/data/heroAssets';
+import { teamData } from '@/data/team';
+import Reveal from '@/components/Reveal';
 import styles from './page.module.css';
 
 const checkIns = [
@@ -199,6 +201,26 @@ export default function Home() {
             ))}
           </ul>
           <WhatsAppLink className="mt-2 inline-flex min-h-[44px] items-center font-semibold text-primary underline underline-offset-4" />
+        </div>
+      </section>
+
+      {/* TEAM */}
+      <section className="bg-white px-5 py-16 md:py-20">
+        <div className="mx-auto max-w-6xl">
+          <h2 className="font-display text-3xl font-bold md:text-4xl">The team behind JaliMind</h2>
+          <p className="mt-2 max-w-2xl text-muted-foreground">Students and builders from across Africa, making support easier to reach.</p>
+          <ul className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-5">
+            {teamData.map((m, i) => (
+              <Reveal key={m.name} delay={i * 90}>
+                <div className="relative aspect-square overflow-hidden rounded-3xl bg-lilac">
+                  <Image src={m.image} alt={m.name} fill sizes="(max-width: 768px) 50vw, 20vw" className="object-cover" />
+                </div>
+                <p className="mt-3 font-display font-semibold leading-tight">{m.name}</p>
+                <p className="text-sm text-muted-foreground">{m.role}</p>
+                <p className="text-sm text-muted-foreground">{m.country}</p>
+              </Reveal>
+            ))}
+          </ul>
         </div>
       </section>
 

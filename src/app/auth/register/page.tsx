@@ -90,7 +90,7 @@ export default function RegisterPage() {
           </div>
         </div>
         <label className="flex cursor-pointer items-start gap-3 text-sm text-muted-foreground">
-          <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-1 h-5 w-5 shrink-0 accent-[#3D35C4]" />
+          <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-1 h-5 w-5 shrink-0 accent-[#8B4A3C]" />
           <span>I agree to the <Link href="/privacy" className="font-semibold text-primary underline">privacy policy</Link>. My chats stay private.</span>
         </label>
         <Button type="submit" variant="cta" size="lg" className="w-full" disabled={loading}>

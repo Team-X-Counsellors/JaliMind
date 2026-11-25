@@ -48,7 +48,7 @@ export default function PreJoin(p: Props) {
       </header>
 
       <main className="mx-auto flex w-full max-w-md flex-1 flex-col px-5 py-5">
-        <div className="relative aspect-[3/4] max-h-[46dvh] w-full overflow-hidden rounded-3xl bg-[#2A2858] sm:aspect-video">
+        <div className="relative aspect-[3/4] max-h-[46dvh] w-full overflow-hidden rounded-3xl bg-[#5A3428] sm:aspect-video">
           {p.stream && p.hasVideo && p.videoOn ? (
             <VideoTile stream={p.stream} muted mirrored label="Your camera preview" className="h-full w-full object-cover" />
           ) : (

@@ -49,16 +49,16 @@ The backend must be running (see its README). Google sign-in also needs the Goog
 
 ## Design system
 
-Night-sky and lilac, calm by default.
+Warm brown and cream, calm by default.
 
 | Token | Use |
 |---|---|
-| night `#17163B` | navigation, hero, text on light |
-| indigo `#3D35C4` | primary actions |
+| night (deep brown) `#3B2118` | navigation, hero, text on light |
+| terracotta (named `indigo` in code) `#8B4A3C` | primary actions |
 | marigold `#FFB224` | the single call-to-action colour (never decoration) |
-| lagoon `#1FB5A3` | positive and calm accents |
+| sage (named `lagoon`) `#4A6741` | positive and calm accents |
 | hibiscus `#E5405E` | alerts and crisis only |
-| lilac `#ECE9FF`, mist `#F6F5FF` | surfaces |
+| sand (`lilac`) `#EDE8DF`, cream (`mist`) `#F9F5F0` | surfaces |
 
 Helpers: `.tap` (44px touch targets), `.pb-safe` (safe-area padding), `.h-dvh-screen`, `.shadow-soft` / `.shadow-pop`, `.bg-orb` and the `Orb` component. Mobile-first, with a tab bar on phones and a collapsible sidebar on desktop.
 

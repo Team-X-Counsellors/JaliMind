@@ -77,7 +77,7 @@ export default function CallScreen(p: Props) {
           className={showRemoteVideo ? 'absolute inset-0 h-full w-full object-cover' : 'pointer-events-none absolute h-px w-px opacity-0'} />
 
         {!showRemoteVideo && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-gradient-to-b from-[#2A2858] to-night px-6 text-center">
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-gradient-to-b from-[#5A3428] to-night px-6 text-center">
             <span className={`flex h-28 w-28 items-center justify-center rounded-full bg-primary font-display text-5xl font-bold ${good ? 'ring-4 ring-lagoon/60' : 'animate-pulse'}`}>
               {p.otherName[0]?.toUpperCase()}
             </span>
@@ -106,7 +106,7 @@ export default function CallScreen(p: Props) {
 
         {/* Self view */}
         {p.wantsVideo && p.localStream && p.hasLocalVideo && (
-          <div className="absolute right-3 top-20 h-36 w-24 overflow-hidden rounded-2xl border-2 border-white/30 bg-[#2A2858] shadow-pop sm:h-44 sm:w-32">
+          <div className="absolute right-3 top-20 h-36 w-24 overflow-hidden rounded-2xl border-2 border-white/30 bg-[#5A3428] shadow-pop sm:h-44 sm:w-32">
             {p.videoOn
               ? <VideoTile stream={p.localStream} muted mirrored label="Your camera" className="h-full w-full object-cover" />
               : <div className="flex h-full items-center justify-center text-white/60"><VideoOff size={26} /></div>}

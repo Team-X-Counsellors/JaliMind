@@ -4,59 +4,59 @@
 
 /*
   JaliMind design system v2
-  Night indigo for trust and focus, marigold for the one action that matters,
-  lagoon teal for calm and "you're okay", hibiscus only for alerts/crisis.
+  Warm terracotta and cream for trust and calm, marigold for the one action that matters,
+  sage green for calm and "you're okay", hibiscus only for alerts/crisis.
   Mobile first: 16px inputs (no iOS zoom), 44px+ tap targets, safe-area aware.
 */
 @layer base {
   :root {
-    --background: 247 100% 98%;
-    --foreground: 244 46% 14%;
+    --background: 36 33% 96%;
+    --foreground: 12 42% 16%;
 
     --card: 0 0% 100%;
-    --card-foreground: 244 46% 14%;
+    --card-foreground: 12 42% 16%;
     --popover: 0 0% 100%;
-    --popover-foreground: 244 46% 14%;
+    --popover-foreground: 12 42% 16%;
 
-    --primary: 243 57% 49%;
+    --primary: 9 42% 39%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 246 60% 94%;
-    --secondary-foreground: 243 57% 35%;
+    --secondary: 36 20% 88%;
+    --secondary-foreground: 9 35% 30%;
 
-    --muted: 246 40% 95%;
-    --muted-foreground: 244 16% 38%;
+    --muted: 36 18% 92%;
+    --muted-foreground: 25 8% 40%;
 
     --accent: 40 100% 57%;
-    --accent-foreground: 244 46% 14%;
+    --accent-foreground: 12 42% 16%;
 
-    --calm: 174 71% 38%;
+    --calm: 107 23% 34%;
     --calm-foreground: 0 0% 100%;
 
     --destructive: 349 75% 52%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 246 30% 89%;
-    --input: 246 30% 85%;
-    --ring: 243 57% 49%;
+    --border: 36 18% 85%;
+    --input: 36 18% 82%;
+    --ring: 9 42% 39%;
 
     --radius: 1rem;
 
     /* Raw hex tokens for hand-styled marketing sections */
-    --night: #17163B;
-    --night-soft: #2A2858;
-    --indigo: #3D35C4;
-    --indigo-light: #6A62E8;
-    --indigo-dark: #2A2490;
+    --night: #3B2118;
+    --night-soft: #5A3428;
+    --indigo: #8B4A3C;
+    --indigo-light: #A85B4A;
+    --indigo-dark: #6B3228;
     --marigold: #FFB224;
     --marigold-dark: #E89A00;
-    --lagoon: #1FB5A3;
-    --lagoon-light: #5FD3C5;
+    --lagoon: #4A6741;
+    --lagoon-light: #6B8F68;
     --hibiscus: #E5405E;
-    --mist: #F6F5FF;
-    --lilac: #ECE9FF;
-    --ink-muted: #5C5A80;
-    --line: #DCD9F5;
+    --mist: #F9F5F0;
+    --lilac: #EDE8DF;
+    --ink-muted: #6B6560;
+    --line: #DDD8D0;
 
     /* Legacy aliases so un-migrated pages pick up the new palette instead of the old one */
     --cream: var(--mist);
@@ -120,9 +120,9 @@
   .min-h-dvh-screen { min-height: 100dvh; }
   .tap { min-height: 44px; min-width: 44px; }
   .text-balance { text-wrap: balance; }
-  .shadow-soft { box-shadow: 0 1px 2px rgb(23 22 59 / 0.04), 0 8px 24px -8px rgb(61 53 196 / 0.14); }
-  .shadow-pop { box-shadow: 0 2px 4px rgb(23 22 59 / 0.06), 0 16px 40px -12px rgb(61 53 196 / 0.28); }
+  .shadow-soft { box-shadow: 0 1px 2px rgb(59 33 24 / 0.04), 0 8px 24px -8px rgb(139 74 60 / 0.14); }
+  .shadow-pop { box-shadow: 0 2px 4px rgb(59 33 24 / 0.06), 0 16px 40px -12px rgb(139 74 60 / 0.28); }
   .scrollbar-none { scrollbar-width: none; }
-  .bg-orb { background: radial-gradient(circle at 30% 28%, #A6F3E8 0%, #1FB5A3 34%, #3D35C4 82%); }
+  .bg-orb { background: radial-gradient(circle at 30% 28%, #A9C4A5 0%, #4A6741 34%, #8B4A3C 82%); }
   .scrollbar-none::-webkit-scrollbar { display: none; }
 }

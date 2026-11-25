@@ -17,7 +17,7 @@ export const teamData: TeamMember[] = [
     image: '/images/About/Kosisochukwu.jpg',
   },
   {
-    name: 'Joy Mwendi',
+    name: 'Mwende Ireri',
     role: 'Documentation & Research',
     country: 'Kenya',
     color: '#4A6741',

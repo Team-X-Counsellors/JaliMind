@@ -20,7 +20,7 @@ export const servicesData: Service[] = [
     title: 'Chat anonymously',
     desc: 'A real counsellor replies. You stay a random nickname. Wipe the chat whenever you like.',
     features: ['No name or email', 'Urgent chats go to the front', 'Delete everything in one tap'],
-    color: '#3D35C4',
+    color: '#8B4A3C',
     image: '/images/services/anonSession.jpg',
   },
   {
@@ -30,7 +30,7 @@ export const servicesData: Service[] = [
     title: 'Book a counsellor',
     desc: 'Pick a time that fits your timetable. Join the call right here, with no extra app.',
     features: ['Video, voice or text', 'Times around your classes', 'Verified counsellors'],
-    color: '#1FB5A3',
+    color: '#4A6741',
     image: '/images/services/online counselling session.jpg',
   },
   {
@@ -40,7 +40,7 @@ export const servicesData: Service[] = [
     title: 'JaliBot',
     desc: 'A quick chat for the moments between sessions. Short answers, one step at a time.',
     features: ['English, Swahili, French, Hausa, Igbo, Twi', 'Spots crisis words and points to help', 'Always says it is an AI'],
-    color: '#6A62E8',
+    color: '#A85B4A',
     image: '/images/services/AIChatSupport.jpg',
   },
   {
@@ -60,7 +60,7 @@ export const servicesData: Service[] = [
     title: 'Campus referrals',
     desc: 'Find the right office at your university and ask for a referral in one tap.',
     features: ['Guidance office, advisor, careers, finance, clinic', 'Counsellors can refer you too'],
-    color: '#2A2490',
+    color: '#6B3228',
     image: '/images/services/referralSystem.jpg',
   },
   {
@@ -70,7 +70,7 @@ export const servicesData: Service[] = [
     title: 'Resource library',
     desc: 'Short reads on stress, sleep, anxiety and relationships. Workbooks are coming soon.',
     features: ['Browse by topic', 'Search in seconds', 'Workbooks coming soon'],
-    color: '#17163B',
+    color: '#3B2118',
     image: '/images/services/resourceLib.jpg',
   },
 ];

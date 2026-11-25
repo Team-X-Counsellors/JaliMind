@@ -17,7 +17,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover', // lets us use safe-area insets under the bottom nav
-  themeColor: '#17163B',
+  themeColor: '#3B2118',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

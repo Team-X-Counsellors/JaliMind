@@ -67,7 +67,7 @@ export default function ProfilePage() {
           <input type="number" min={0} max={60} value={p.years_experience} onChange={(e) => setP({ ...p, years_experience: Number(e.target.value) })} className="mt-1.5 h-12 w-full rounded-xl border-2 border-input bg-card px-4 text-base" />
         </label>
         <label className="flex items-start gap-3 text-sm">
-          <input type="checkbox" checked={p.accepts_anonymous} onChange={(e) => setP({ ...p, accepts_anonymous: e.target.checked })} className="mt-1 h-5 w-5 accent-[#3D35C4]" />
+          <input type="checkbox" checked={p.accepts_anonymous} onChange={(e) => setP({ ...p, accepts_anonymous: e.target.checked })} className="mt-1 h-5 w-5 accent-[#8B4A3C]" />
           <span><b>I take anonymous chats.</b><span className="block text-muted-foreground">Students can reach you through the anonymous chat queue.</span></span>
         </label>
         {msg && <p role={msg.ok ? 'status' : 'alert'} className={`text-sm font-medium ${msg.ok ? 'text-[#0F6F63]' : 'text-destructive'}`}>{msg.text}</p>}

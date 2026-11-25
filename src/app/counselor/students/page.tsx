@@ -116,7 +116,7 @@ export default function StudentsPage() {
               <div className="space-y-2">
                 {offices.map((o) => (
                   <label key={o.id} className={`tap flex cursor-pointer items-start gap-3 rounded-xl border-2 p-3 ${officeId === o.id ? 'border-primary bg-secondary/60' : 'border-border'}`}>
-                    <input type="radio" name="office" checked={officeId === o.id} onChange={() => setOfficeId(o.id)} className="mt-1 h-4 w-4 accent-[#3D35C4]" />
+                    <input type="radio" name="office" checked={officeId === o.id} onChange={() => setOfficeId(o.id)} className="mt-1 h-4 w-4 accent-[#8B4A3C]" />
                     <span><span className="block font-semibold">{o.name}</span><span className="text-sm text-muted-foreground">{o.category_label}{o.description ? ` · ${o.description}` : ''}</span></span>
                   </label>
                 ))}

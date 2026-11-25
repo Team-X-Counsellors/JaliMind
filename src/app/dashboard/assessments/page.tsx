@@ -32,9 +32,9 @@ function Trend({ results, max, better }: { results: Result[]; max: number; bette
   return (
     <figure>
       <svg viewBox={`0 0 ${W} ${H}`} className="h-24 w-full" role="img" aria-label={`Your last ${pts.length} scores. Latest ${last.score} out of ${max}. ${better === 'lower' ? 'Lower' : 'Higher'} is better.`}>
-        <line x1={P} x2={W - P} y1={H - P} y2={H - P} stroke="#DCD9F5" strokeWidth="1" />
-        {pts.length > 1 && <path d={d} fill="none" stroke="#3D35C4" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />}
-        {pts.map((p, i) => <circle key={p.id} cx={x(i)} cy={y(p.score)} r={i === pts.length - 1 ? 5 : 3.5} fill={i === pts.length - 1 ? '#FFB224' : '#3D35C4'} stroke="#fff" strokeWidth="1.5" />)}
+        <line x1={P} x2={W - P} y1={H - P} y2={H - P} stroke="#DDD8D0" strokeWidth="1" />
+        {pts.length > 1 && <path d={d} fill="none" stroke="#8B4A3C" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />}
+        {pts.map((p, i) => <circle key={p.id} cx={x(i)} cy={y(p.score)} r={i === pts.length - 1 ? 5 : 3.5} fill={i === pts.length - 1 ? '#FFB224' : '#8B4A3C'} stroke="#fff" strokeWidth="1.5" />)}
       </svg>
       <figcaption className="text-xs text-muted-foreground">{better === 'lower' ? 'Lower is better' : 'Higher is better'} · {pts.length} check-in{pts.length > 1 ? 's' : ''}</figcaption>
     </figure>
